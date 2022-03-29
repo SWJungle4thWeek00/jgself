@@ -49,74 +49,75 @@
             transform: translate(-50%, -50%);
         }
 
-        #checkId{
+        #checkId {
             display: none;
         }
-        #checkId2{
+
+        #checkId2 {
             display: none;
         }
     </style>
     <script>
         function idCheck() {
-                let id = $("#idForm").val();
+            let id = $("#idForm").val();
 
-                if (id.length < 7 ){
-                    alert('아이디는 7자 이상으로 입력해주세요');
-                }
-                else{
-                    
-                    let obj = {"id_give" : id}
+            if (id.length < 7) {
+                alert('아이디는 7자 이상으로 입력해주세요');
+            }
+            else {
 
-                    $.ajax({
-                        type: "POST", // POST 방식으로 요청하겠다.
-                        url: "/idCheck", // /idCheck 이라는 url에 요청하겠다.
-                        headers: {'Content-Type': 'application/json'},
-                        data: JSON.stringify(obj), // 데이터를 주는 방법
-                        dataType: "json",
-                        success: function (response) { // 성공하면
-                            if (response["result"] == "success") {
-                                $("#checkId2").hide();
-                                $("#checkId").show();
-                            } else {
-                                $("#checkId").hide();
-                                $("#checkId2").show();
-                                alert("이미 가입된 아이디입니다!")
-                            }
+                let obj = { "id_give": id }
+
+                $.ajax({
+                    type: "POST", // POST 방식으로 요청하겠다.
+                    url: "/idCheck", // /idCheck 이라는 url에 요청하겠다.
+                    headers: { 'Content-Type': 'application/json' },
+                    data: JSON.stringify(obj), // 데이터를 주는 방법
+                    dataType: "json",
+                    success: function (response) { // 성공하면
+                        if (response["result"] == "success") {
+                            $("#checkId2").hide();
+                            $("#checkId").show();
+                        } else {
+                            $("#checkId").hide();
+                            $("#checkId2").show();
+                            alert("이미 가입된 아이디입니다!")
                         }
-                    })
-                }
+                    }
+                })
+            }
         }
-        function signUp(){
+        function signUp() {
             let id = $("#idForm").val();
             let pw = $("#passwordForm").val();
             let pwCheck = $("#passwordCheckForm").val();
-            if ($('#checkId').is(':visible') == false){
+            if ($('#checkId').is(':visible') == false) {
                 alert("아이디 중복 체크를 해주세요!")
             }
-            else if (id.length < 7 && pw.length < 7 && pwCheck.length < 7){
+            else if (id.length < 7 && pw.length < 7 && pwCheck.length < 7) {
                 alert("아이디 비밀번호는 7자 이상으로 입력해주세요!")
             }
-            else if (pw != pwCheck){
+            else if (pw != pwCheck) {
                 alert("비밀번호, 비밀번호 확인은 동일해야합니다.")
             }
-            else{
-                let obj = {"id_give" : id, "pw_give" : pw};
+            else {
+                let obj = { "id_give": id, "pw_give": pw };
 
-                    $.ajax({
-                        type: "POST", // POST 방식으로 요청하겠다.
-                        url: "/signup", 
-                        headers: {'Content-Type': 'application/json'},
-                        data: JSON.stringify(obj), // 데이터를 주는 방법
-                        dataType: "json",
-                        success: function (response) { // 성공하면
-                            if (response["result"] == "success") {
-                                alert("회원가입 완료")
-                                location.href = "/login"
-                            } else {
-                                alert("회원가입 실패!")
-                            }
+                $.ajax({
+                    type: "POST", // POST 방식으로 요청하겠다.
+                    url: "/signup",
+                    headers: { 'Content-Type': 'application/json' },
+                    data: JSON.stringify(obj), // 데이터를 주는 방법
+                    dataType: "json",
+                    success: function (response) { // 성공하면
+                        if (response["result"] == "success") {
+                            alert("회원가입 완료")
+                            location.href = "/login"
+                        } else {
+                            alert("회원가입 실패!")
                         }
-                    })
+                    }
+                })
             }
         }
     </script>
@@ -124,29 +125,29 @@
 </head>
 
 <body>
-    <div id = "all">    
+    <div id="all">
         <div class="signUpImg">
-                <img id="signUpImg" src="{{ url_for('static', filename='logo.png') }}" alt = "signUpImg">
+            <img id="signUpImg" src="{{ url_for('static', filename='logo.png') }}" alt="signUpImg">
         </div>
-        <div>    
+        <div>
             <label for="idForm">ID : </label>
-            <input type="text" id ="idForm" name = "idForm">
+            <input type="text" id="idForm" name="idForm">
             <button id="checkIdButton" onclick="idCheck()" class="logiButton">
                 중복확인
             </button>
-            <label id = "checkId">사용 가능</label>
-            <label id = "checkId2">사용 불가</label>
+            <label id="checkId">사용 가능</label>
+            <label id="checkId2">사용 불가</label>
         </div>
         <div>
             <label for="passwordForm">PW : </label>
-            <input type="password" id = "passwordForm" name = "passowrodForm">
+            <input type="password" id="passwordForm" name="passowrodForm">
         </div>
         <div>
             <label for="passwordCheckForm">PW Check : </label>
-            <input type="password" id = "passwordCheckForm" name = "passowrodCheckForm">
+            <input type="password" id="passwordCheckForm" name="passowrodCheckForm">
         </div>
         <div>
-            <button onclick = signUp() class="newUserButton">
+            <button onclick=signUp() class="newUserButton">
                 회원가입
             </button>
         </div>
