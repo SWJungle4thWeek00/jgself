@@ -8,47 +8,60 @@ app = Flask(__name__)
 client = MongoClient('localhost', 27017)  # mongoDB는 27017 포트로 돌아갑니다.
 db = client.dbsparta  # 'dbsparta'라는 이름의 db를 만들거나 사용합니다.
 
-
 @app.route('/')
 def home():
     return render_template('index.html')
 
+# 생성
+
 
 @app.route('/memo', methods=['POST'])
-def post_article():
-    # 1. 클라이언트로부터 데이터를 받기
-    url_receive = request.form['url_give']  # 클라이언트로부터 url을 받는 부분
-    comment_receive = request.form['comment_give']  # 클라이언트로부터 comment를 받는 부분
+def post_memo():
+    title_receive = request.form['title_give']
+    content_receive = request.form['content_give']
+    memo = {'title': title_receive, 'content': content_receive}
 
-    # 2. meta tag를 스크래핑하기
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'}
-    data = requests.get(url_receive, headers=headers)
-    soup = BeautifulSoup(data.text, 'html.parser')
-
-    og_image = soup.select_one('meta[property="og:image"]')
-    og_title = soup.select_one('meta[property="og:title"]')
-    og_description = soup.select_one('meta[property="og:description"]')
-
-    url_title = og_title['content']
-    url_description = og_description['content']
-    url_image = og_image['content']
-
-    article = {'url': url_receive, 'title': url_title, 'desc': url_description, 'image': url_image,
-               'comment': comment_receive}
-
-    # 3. mongoDB에 데이터를 넣기
-    db.articles.insert_one(article)
+    db.memo.insert_one(memo)
 
     return jsonify({'result': 'success'})
 
 
-@app.route('/memo', methods=['GET'])
-def read_articles():
-    # 1. mongoDB에서 _id 값을 제외한 모든 데이터 조회해오기 (Read)
-    result = list(db.articles.find({}, {'_id': 0}))
-    # 2. articles라는 키 값으로 article 정보 보내주기
-    return jsonify({'result': 'success', 'articles': result})
+# 삭제
+@app.route('/memo/delete', methods=['POST'])
+def delete_memo():
+    _id_receive = request.form['_id_give']
+    db.memo.delete_one({'_id': ObjectId(_id_receive)})
+    return jsonify({'result': 'success'})
+
+# 수정
+
+
+@app.route('/memo/revise', methods=['POST'])
+def rivse_memo():
+    memos = []
+    result = list(db.memo.find({}))
+    for memo in result:
+        memo['_id'] = str(memo['_id'])
+        memos.append(memo)
+    _id_receive = request.form['_id_give']
+    title_receive = request.form['title_give']
+    content_receive = request.form['content_give']
+    db.memo.update_one({'_id': ObjectId(_id_receive)}, {
+                       '$set': {'title': title_receive}})
+
+    db.memo.update_one({'_id': ObjectId(_id_receive)}, {
+                       '$set': {'content': content_receive}})
+    return jsonify({'result': 'success'})
+
+
+@app.route('/memo/read', methods=['GET'])
+def read_memo():
+    memos = []
+    result = list(db.memo.find({}))
+    for memo in result:
+        memo['_id'] = str(memo['_id'])
+        memos.append(memo)
+    return jsonify({'result': 'success', 'memo': result})
 
 
 if __name__ == '__main__':

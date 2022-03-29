@@ -22,12 +22,16 @@
     <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet">
 
 
-    <title>SW사관학교 정글 | 나홀로 메모장</title>
+    <title>week00_miniproject_team05</title>
 
     <!-- style -->
     <style type="text/css">
         * {
             font-family: "Stylish", sans-serif;
+        }
+
+        .jumbotron {
+            width: 600px;
         }
 
         .wrap {
@@ -49,35 +53,35 @@
         }
     </style>
     <script>
-        $(document).ready(function () {
-            $("#cards-box").html("");
-            showArticles();
-        });
+        // $(document).ready(function () {
+        //     $("#cards-box").html("");
+        //     showintro();
+        // });
 
-        function openClose() {
-            // id 값 post-box의 display 값이 block 이면(= 눈에 보이면)
-            if ($("#post-box").css("display") == "block") {
-                // post-box를 가리고
-                $("#post-box").hide();
-                // 다시 버튼을 클릭하면, 박스 열기를 할 수 있게 텍스트 바꿔두기
-                $("#btn-post-box").text("포스팅 박스 열기");
-            } else {
-                // 아니면(눈에 보이지 않으면) post-box를 펴라
-                $("#post-box").show();
-                // 다시 버튼을 클릭하면, 박스 닫기를 할 수 있게 텍스트 바꿔두기
-                $("#btn-post-box").text("포스팅 박스 닫기");
-            }
-        }
+        // function openClose() {
+        //     // id 값 post-box의 display 값이 block 이면(= 눈에 보이면)
+        //     if ($("#post-box").css("display") == "block") {
+        //         // post-box를 가리고
+        //         $("#post-box").hide();
+        //         // 다시 버튼을 클릭하면, 박스 열기를 할 수 있게 텍스트 바꿔두기
+        //         $("#btn-post-box").text("포스팅 박스 열기");
+        //     } else {
+        //         // 아니면(눈에 보이지 않으면) post-box를 펴라
+        //         $("#post-box").show();
+        //         // 다시 버튼을 클릭하면, 박스 닫기를 할 수 있게 텍스트 바꿔두기
+        //         $("#btn-post-box").text("포스팅 박스 닫기");
+        //     }
+        // }
 
-        function postArticle() {
-            let url = $("#post-url").val();
+        function makeintro() {
+            let name = $("#post-name").val();
             let comment = $("#post-comment").val();
 
             // 2. memo에 POST 방식으로 메모 생성 요청하기
             $.ajax({
                 type: "POST", // POST 방식으로 요청하겠다.
                 url: "/memo", // /memo라는 url에 요청하겠다.
-                data: { url_give: url, comment_give: comment }, // 데이터를 주는 방법
+                data: { name_give: name, sex_give: sex, intro_give: intro }, // 데이터를 주는 방법
                 success: function (response) { // 성공하면
                     if (response["result"] == "success") {
                         alert("포스팅 성공!");
@@ -90,124 +94,198 @@
             })
         }
 
-        function showArticles() {
+        function showIntros() {
             $.ajax({
                 type: "GET",
-                url: "/memo",
+                url: "/memo/read",
                 data: {},
                 success: function (response) {
-                    let articles = response["articles"];
-                    console.log(articles);
-                    for (let i = 0; i < articles.length; i++) {
-                        makeCard(articles[i]["image"], articles[i]["url"], articles[i]["title"], articles[i]["desc"], articles[i]["comment"]);
+                    let intros = response["intros"];
+                    console.log(intros);
+                    for (let i = 0; i < intros.length; i++) {
+                        makeCard(intros[i]["image"], intros[i]["name"], intros[i]["sex"], intros[i]["intro"]);
+                        // makeCard(intros[i]["image"], intros[i]["name"], intros[i]["sex"], intros[i]["mbti"], intros[i]["intro"], intros[i]["git_address"]);
                     }
                 }
             })
         }
 
-        function makeCard(image, url, title, desc, comment) {
-            let tempHtml = `<div class="card">
-                        <img class="card-img-top" src="${image}" alt="Card image cap">
-                        <div class="card-body">
-                        <a href="${url}" target="_blank" class="card-title">${title}</a>
-                        <p class="card-text">${desc}</p>
-                        <p class="card-text comment">${comment}</p>
-                        </div>
-                    </div>`;
-            $("#cards-box").append(tempHtml);
+        // function makeCard(image, name, title, desc, comment) {
+        //     let tempHtml = `<div class="card">
+        //                 <img class="card-img-top" src="${image}" alt="Card image cap">
+        //                 <div class="card-body">
+        //                 <a href="${url}" target="_blank" class="card-title">${title}</a>
+        //                 <p class="card-text">${desc}</p>
+        //                 <p class="card-text comment">${comment}</p>
+        //                 </div>
+        //             </div>`;
+        //     $("#cards-box").append(tempHtml);
 
-        }
+        // }
     </script>
 
 </head>
 
 <body>
+    <button type="button" class="btn btn-info">logout</button>
     <div class="wrap">
-        <div class="jumbotron">
-            <h1 class="display-4">나홀로 링크 메모장!</h1>
-            <p class="lead">중요한 링크를 저장해두고, 나중에 볼 수 있는 공간입니다</p>
+        <div class="row">
+            <div class="col-6">
+                <img src="https://swjungle.net/static/image/ogimage.png" class="img-fluid" alt="Responsive image"
+                    width="300px">
+                <h2 class="display-6">sw 사관학교 정글 4기 b반</h2>
+                <p class="lead">서로에 대해 알아봐요 :D</p>
+            </div>
+            <div class="col-4" style="width: 18rem;">
+                <img class="card-img-top"
+                    src="https://media.istockphoto.com/vectors/man-with-laptop-semi-flat-rgb-color-vector-illustration-freelancer-vector-id1301180564?k=20&m=1301180564&s=612x612&w=0&h=83_kOpJ9TE5n9BfmuT3ewkjDxi02gBmV9t1Lb2eC2Dg="
+                    alt="Card image cap">
+                <div class="card-body">
+                    <p class="card-text">간단한 개인정보</p>
+                </div>
+            </div>
+            <!-- <div class="jumbotron">
+            <h1 class="display-4">sw 사관학교 정글 4기 b반</h1>
+            <p class="lead">서로에 대해 알아봐요 :D</p>
+            <div class="card" style="width: 18rem;">
+                <img class="card-img-top"
+                    src="https://media.istockphoto.com/vectors/man-with-laptop-semi-flat-rgb-color-vector-illustration-freelancer-vector-id1301180564?k=20&m=1301180564&s=612x612&w=0&h=83_kOpJ9TE5n9BfmuT3ewkjDxi02gBmV9t1Lb2eC2Dg="
+                    alt="Card image cap">
+                <div class="card-body">
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of
+                        the card's content.</p>
+                </div>
+            </div>
             <hr class="my-4">
             <p class="lead">
-                <button onclick="openClose()" id="btn-post-box" type="button" class="btn btn-primary">포스팅 박스 열기
-                </button>
+                <a class="btn btn-primary btn-lg" href="#" role="button">포스팅박스 열기</a>
             </p>
-        </div>
-        <div id="post-box" class="form-post" style="display:none">
-            <div>
-                <div class="form-group">
-                    <label for="post-url">아티클 URL</label>
-                    <input id="post-url" class="form-control" placeholder="">
+            </div> -->
+
+            <div class="wrap">
+            </div>
+            <div id="post-box" class="form-post" style="display:none">
+                <div>
+                    <div class="form-group">
+                        <label for="post-url">아티클 URL</label>
+                        <input id="post-url" class="form-control" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="post-comment">간단 코멘트</label>
+                        <textarea id="post-comment" class="form-control" rows="2"></textarea>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="postArticle()">저장</button>
                 </div>
-                <div class="form-group">
-                    <label for="post-comment">간단 코멘트</label>
-                    <textarea id="post-comment" class="form-control" rows="2"></textarea>
-                </div>
-                <button type="button" class="btn btn-primary" onclick="postArticle()">기사저장</button>
             </div>
         </div>
-        <div id="cards-box" class="card-columns">
+        <hr class="my-4">
+        <p class="lead">
+        <div class="card-columns">
             <div class="card">
                 <img class="card-img-top"
-                    src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+                    src="https://d2ur7st6jjikze.cloudfront.net/offer_photos/29590/185689_medium_1525763241.jpg?1525763241"
                     alt="Card image cap">
                 <div class="card-body">
-                    <a href="#" class="card-title">여기 기사 제목이 들어가죠</a>
-                    <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
-                    <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+                    <p class="card-title">이름</p>
+                    <p class="card-text">MBTI:</p>
+                    <p class="card-text comment">한줄 자기소개:</p>
                 </div>
             </div>
             <div class="card">
                 <img class="card-img-top"
-                    src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+                    src="https://d2ur7st6jjikze.cloudfront.net/offer_photos/29590/185689_medium_1525763241.jpg?1525763241"
                     alt="Card image cap">
                 <div class="card-body">
-                    <a href="#" class="card-title">여기 기사 제목이 들어가죠</a>
-                    <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
-                    <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+                    <p class="card-title">이름:</p>
+                    <p class="card-text">Mbti:</p>
+                    <p class="card-text comment">한줄 자기소개:</p>
                 </div>
             </div>
             <div class="card">
                 <img class="card-img-top"
-                    src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+                    src="https://d2ur7st6jjikze.cloudfront.net/offer_photos/29590/185689_medium_1525763241.jpg?1525763241"
                     alt="Card image cap">
                 <div class="card-body">
-                    <a href="#" class="card-title">여기 기사 제목이 들어가죠</a>
-                    <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
-                    <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+                    <p class="card-title">이름:</p>
+                    <p class="card-text">Mbti:</p>
+                    <p class="card-text comment">한줄 자기소개:</p>
                 </div>
             </div>
             <div class="card">
                 <img class="card-img-top"
-                    src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+                    src="https://d2ur7st6jjikze.cloudfront.net/offer_photos/29590/185689_medium_1525763241.jpg?1525763241"
                     alt="Card image cap">
                 <div class="card-body">
-                    <a href="#" class="card-title">여기 기사 제목이 들어가죠</a>
-                    <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
-                    <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+                    <p class="card-title">이름:</p>
+                    <p class="card-text">Mbti:</p>
+                    <p class="card-text comment">한줄 자기소개:</p>
                 </div>
             </div>
             <div class="card">
                 <img class="card-img-top"
-                    src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+                    src="https://d2ur7st6jjikze.cloudfront.net/offer_photos/29590/185689_medium_1525763241.jpg?1525763241"
                     alt="Card image cap">
                 <div class="card-body">
-                    <a href="#" class="card-title">여기 기사 제목이 들어가죠</a>
-                    <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
-                    <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
-                </div>
-            </div>
-            <div class="card">
-                <img class="card-img-top"
-                    src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
-                    alt="Card image cap">
-                <div class="card-body">
-                    <a href="#" class="card-title">여기 기사 제목이 들어가죠</a>
-                    <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
-                    <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+                    <p class="card-title">이름:</p>
+                    <p class="card-text">Mbti:</p>
+                    <p class="card-text comment">한줄 자기소개:</p>
                 </div>
             </div>
         </div>
     </div>
+    <!-- <div id="cards-box" class="card-columns">
+            <div class="card">
+                <img class="card-img-top"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzjjIM0neLIq_Nkb-oWldQ50MUj_xKvh7puw&usqp=CAU"
+                    alt="Card image cap">
+                <div class="card-body">
+                    <p class="name">이름</p>
+                    <p class="sex">성별</p>
+                    <p class="intro">여기에 한줄 자기소개 </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="cards-box" class="card-columns">
+            <div class="card">
+                <img class="card-img-top"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzjjIM0neLIq_Nkb-oWldQ50MUj_xKvh7puw&usqp=CAU"
+                    alt="Card image cap">
+                <div class="card-body">
+                    <p class="name">이름</p>
+                    <p class="sex">성별</p>
+                    <p class="intro">여기에 한줄 자기소개 </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="cards-box" class="card-columns">
+            <div class="card">
+                <img class="card-img-top"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzjjIM0neLIq_Nkb-oWldQ50MUj_xKvh7puw&usqp=CAU"
+                    alt="Card image cap">
+                <div class="card-body">
+                    <p class="name">이름</p>
+                    <p class="sex">성별</p>
+                    <p class="intro">여기에 한줄 자기소개 </p>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="cards-box" class="card-columns">
+            <div class="card">
+                <img class="card-img-top"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzjjIM0neLIq_Nkb-oWldQ50MUj_xKvh7puw&usqp=CAU"
+                    alt="Card image cap">
+                <div class="card-body">
+                    <p class="name">이름</p>
+                    <p class="sex">성별</p>
+                    <p class="intro">여기에 한줄 자기소개 </p>
+                </div>
+            </div>
+        </div>
+    </div> -->
 </body>
 
 </html>
