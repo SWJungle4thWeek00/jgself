@@ -41,7 +41,9 @@ db = client.jgself  # 'dbsparta'라는 이름의 db를 만들거나 사용합니
 def home():
     if 'userId' in session:
         userId = session['userId']
-        return render_template('index.html', userId=userId)
+
+        profiles = list(db.profiles.find({'userId' : {'$ne' : userId}}))
+        return render_template('index.html', userId=userId, profiles = profiles)
     else:
         return redirect("/login")
 
