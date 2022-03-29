@@ -1,6 +1,5 @@
-from asyncio.windows_events import NULL
 from operator import ne
-from flask import Flask, render_template, jsonify, request, session, redirect
+from flask import Flask, make_response, render_template, jsonify, request, session, redirect, make_response
 import requests
 from bs4 import BeautifulSoup
 from pymongo import MongoClient  # pymongo를 임포트 하기(패키지 인스톨 먼저 해야겠죠?)
@@ -42,7 +41,9 @@ db = client.jgself  # 'dbsparta'라는 이름의 db를 만들거나 사용합니
 def home():
     if 'userId' in session:
         userId = session['userId']
-        return render_template('index.html')
+
+        profiles = list(db.profiles.find({'userId' : {'$ne' : userId}}))
+        return render_template('index.html', userId=userId, profiles = profiles)
     else:
         return redirect("/login")
 
@@ -61,6 +62,10 @@ def login_user():
 
         if len(check) > 0:
             if(bcrypt.checkpw(encoded_new_password, check[0]['password'])):
+                resp = make_response("Login 완료!")
+                resp.set_cookie('userId',id_receive)
+                session['userId'] = id_receive
+
                 return jsonify({'result': 'success'})
             else:
                 return jsonify({'result': 'false'})
@@ -92,15 +97,20 @@ def signUp_user():
 
 @app.route('/idCheck', methods=['POST'])
 def read_userId():
-
     params = request.get_json()
     id_receive = params['id_give']
     result = list(db.users.find( {'userId': id_receive}))
+    emailCheck = list(db.checkEmails.find({'email' : id_receive}))
 
-    if len(result) > 0:
+    if len(result) > 0 or len(emailCheck) < 1:
         return jsonify({'result': 'false'})
     else:
         return jsonify({'result': 'success'})
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    session.pop('userId', None)
+    return redirect('/')
 
 
 if __name__ == '__main__':

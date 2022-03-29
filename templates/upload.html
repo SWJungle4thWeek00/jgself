@@ -16,6 +16,11 @@
         integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
         crossorigin="anonymous"></script>
 
+
+    <!-- AWS S3 사용 -->
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.891.0.min.js"></script>
+
+
     <title>SW사관학교 정글 | 나홀로 메모장</title>
 
     <!-- style -->
@@ -156,6 +161,9 @@
             let intro = $("#post-intro").val();
             let git_address = $("#post-git-id").val();
 
+
+            changeToS3Imagekey() // 사진 파일 이미지키로 변경
+
             $.ajax({
                 type: "POST", // POST 방식으로 요청하겠다.
                 url: "/memo", // /memo라는 url에 요청하겠다.
@@ -212,6 +220,34 @@
         });
 
 
+        // // 사진파일 이미지키(S3 활용)로 변경 
+        function changeToS3Imagekey() {
+            AWS.config.update({
+                region: 'ap-northeast-2',
+                credentials: new AWS.CognitoIdentityCredentials({
+                    IdentityPoolId: 'us-east-1:c1a92a5c-842e-4d5b-afbb-e8c5e2dfc013',
+                })
+            })
+
+            let fileChooser = document.getElementById('upload-file').files;
+            let file = fileChooser[0];
+
+            if (file) {
+                let upload = new AWS.S3.ManagedUpload({
+                    params: {
+                        Bucket: 'hamdobucket',
+                        ContentType: file.type,
+                        Key: file.name,
+                        Body: file,
+                        ACL: 'public-read'
+                    }
+                })
+            }
+
+
+        }
+
+
     </script>
 
 </head>
@@ -252,6 +288,7 @@
                     <div class="row mt-2">
                         <div class="col-md-12"><label class="labels">이름</label><input type="text" id="post-name"
                                 class="form-control" placeholder="당신의 이름이 궁금해요" value=""></div>
+
                     </div>
                     <div class="row mt-3">
                         <div class="col-md-12"><label class="labels">성별</label></div>
@@ -269,6 +306,7 @@
                     <div class="row mt-3">
                         <div class="col-md-12"><label class="labels">MBTI</label><input type="text" id='post-mbti'
                                 class="form-control" placeholder="당신의 MBTI가 궁금해요" value=""></div>
+
                     </div>
 
                     <div class="row mt-3">
@@ -278,6 +316,7 @@
                     <div class="row mt-3">
                         <div class="col-md-12"><label class="labels">깃허브 아이디</label><input type="text" id="post-git-id"
                                 class="form-control" placeholder="깃허브 아이디를 알려주세요" value=""></div>
+
                     </div>
                     <div class="row mt-3 edit-delete-button">
                         <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="button"
