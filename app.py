@@ -1,16 +1,16 @@
-from flask import Flask, render_template, jsonify, request
-from pymongo import MongoClient
+from asyncio.windows_events import NULL
+from operator import ne
+from flask import Flask, render_template, jsonify, request, session, redirect
 import requests
+from bs4 import BeautifulSoup
+from pymongo import MongoClient  # pymongo를 임포트 하기(패키지 인스톨 먼저 해야겠죠?)
+#from flask_bcrypt import Bcrypt
+import bcrypt
 
 app = Flask(__name__)
+app.secret_key = 'jgself'
 
 client = MongoClient('localhost', 27017)  # mongoDB는 27017 포트로 돌아갑니다.
-db = client.week00  # 'dbsparta'라는 이름의 db를 만들거나 사용합니다.
-
-@app.route('/')
-def main():
-    return render_template('upload_content.html')
-
 
 @app.route('/memo', methods=['POST'])
 def post_article():
@@ -35,6 +35,73 @@ def post_article():
 
     return jsonify({'result': 'success'})
 
+db = client.jgself  # 'dbsparta'라는 이름의 db를 만들거나 사용합니다.
 
-if __name__=='__main__':    
+
+@app.route('/')
+def home():
+    if 'userId' in session:
+        userId = session['userId']
+        return render_template('index.html')
+    else:
+        return redirect("/login")
+
+
+@app.route('/login', methods=['POST', 'GET'])
+def login_user():
+    if request.method == 'POST':
+        # 1. 클라이언트로부터 데이터를 받기
+        params = request.get_json()
+        id_receive = params['id_give']
+        pw_receive = params['pw_give']  # 클라이언트로부터 pw를 받는 부분
+
+        encoded_new_password = pw_receive.encode('utf-8')
+
+        check = list(db.users.find({'userId' : id_receive}))
+
+        if len(check) > 0:
+            if(bcrypt.checkpw(encoded_new_password, check[0]['password'])):
+                return jsonify({'result': 'success'})
+            else:
+                return jsonify({'result': 'false'})
+        else:
+            print("id 없음!")
+            return jsonify({'result': 'false'})
+
+    else:
+        return render_template("login.html")
+
+@app.route('/signup', methods=['POST', 'GET'])
+def signUp_user():
+    if request.method == 'POST':
+        # 1. 클라이언트로부터 데이터를 받기
+        params = request.get_json()
+        id_receive = params['id_give']
+        pw_receive = params['pw_give']  # 클라이언트로부터 pw를 받는 부분
+
+        encoded_password = pw_receive.encode('utf-8')
+        hashed_password = bcrypt.hashpw(encoded_password, bcrypt.gensalt())
+        
+        db.users.insert_one({'userId':id_receive,'password': hashed_password})
+
+        return jsonify({'result': 'success'})
+
+    else:
+        return render_template("signup.html")
+
+
+@app.route('/idCheck', methods=['POST'])
+def read_userId():
+
+    params = request.get_json()
+    id_receive = params['id_give']
+    result = list(db.users.find( {'userId': id_receive}))
+
+    if len(result) > 0:
+        return jsonify({'result': 'false'})
+    else:
+        return jsonify({'result': 'success'})
+
+
+if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
