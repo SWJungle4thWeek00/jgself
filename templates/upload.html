@@ -16,6 +16,9 @@
         integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
         crossorigin="anonymous"></script>
 
+    <!-- AWS S3 사용 -->
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.891.0.min.js"></script>
+
     <title>SW사관학교 정글 | 나홀로 메모장</title>
 
     <!-- style -->
@@ -28,6 +31,7 @@
             margin-left: 140px;
             margin-right: 140px;
         }
+
         .form-control:focus {
             box-shadow: none;
             border-color: rgb(160, 209, 181);
@@ -81,19 +85,23 @@
             margin-right: 20px;
             font-size: 16px;
         }
+
         .edit-delete-button {
             float: right;
             margin-bottom: 20px;
         }
+
         .ocr_upload .ocr_upload-text {
             font-weight: bold;
             letter-spacing: -1px;
         }
+
         .ocr_upload .ocr_upload-warning {
             font-size: small;
             font-weight: normal;
             color: #b2b2b2;
         }
+
         .ocr_thumbnail {
             display: flex;
             flex-direction: column;
@@ -101,37 +109,42 @@
             align-items: center;
             width: auto;
             height: 350px;
-        }   
-    .ocr_thumbnail label {
-      padding: 10px 20px;
-      background-color: rgba(0, 53, 109, 0.95);
-      border-radius: 5px;
-      color: white;
-      cursor: pointer;
-    }
-    .ocr_form {
+        }
 
-        margin-bottom: 20px;
-    }
-    .thumbNail {
-      width: auto;
-      height: 250px;
-      border: 1px solid black;
-      background-color:cadetblue;
-      margin-bottom: 25px;
-    }
-    .visible {
-      visibility: hidden;
-      /* display: none 이랑 뭐가 다른지 */
-    }
-    .container input[type="submit"] {
-      position: absolute;
-      width: 0;
-      height: 0;
-      padding: 0;
-      overflow: hidden;
-      border: 0;
-    }
+        .ocr_thumbnail label {
+            padding: 10px 20px;
+            background-color: rgba(0, 53, 109, 0.95);
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .ocr_form {
+
+            margin-bottom: 20px;
+        }
+
+        .thumbNail {
+            width: auto;
+            height: 250px;
+            border: 1px solid black;
+            background-color: cadetblue;
+            margin-bottom: 25px;
+        }
+
+        .visible {
+            visibility: hidden;
+            /* display: none 이랑 뭐가 다른지 */
+        }
+
+        .container input[type="submit"] {
+            position: absolute;
+            width: 0;
+            height: 0;
+            padding: 0;
+            overflow: hidden;
+            border: 0;
+        }
     </style>
 
     <script>
@@ -145,16 +158,18 @@
             let mbti = $("#post-mbti").val();
             let intro = $("#post-intro").val();
             let git_address = $("#post-git-id").val();
-            
+
+            changeToS3Imagekey() // 사진 파일 이미지키로 변경
+
             $.ajax({
                 type: "POST", // POST 방식으로 요청하겠다.
                 url: "/memo", // /memo라는 url에 요청하겠다.
-                data: { 
-                    name_client: name, 
+                data: {
+                    name_client: name,
                     sex_client: sex,
                     mbti_client: mbti,
                     intro_client: intro,
-                    git_id_client: git_address, 
+                    git_id_client: git_address,
                 },
                 success: function (response) { // 성공하면
                     if (response["result"] == "success") {
@@ -166,41 +181,67 @@
                     }
                 }
             })
-            alert(name + sex + mbti +intro + git_address);
+            alert(name + sex + mbti + intro + git_address);
         }
 
-        window.addEventListener('load', function() {
-  const frame = document.querySelector(".ocr_thumbnail");
-  const thumbNail = document.querySelector(".thumbNail");
-  const upload_file = document.querySelector("#upload-file");
-  const upload_name = document.querySelector(".upload-name");
+        window.addEventListener('load', function () {
+            const frame = document.querySelector(".ocr_thumbnail");
+            const thumbNail = document.querySelector(".thumbNail");
+            const upload_file = document.querySelector("#upload-file");
+            const upload_name = document.querySelector(".upload-name");
 
-  upload_file.addEventListener('input', ()=> {
-    if(isImage(upload_file.files[0])){
-      changeVal(upload_name, (upload_file.files[0].name));
-      const reader = new FileReader();
-      reader.addEventListener('load', ()=> {
-        thumbNail.src = reader.result; 
-        if(frame.classList.length>1){
-        frame.classList.remove('visible');
+            upload_file.addEventListener('input', () => {
+                if (isImage(upload_file.files[0])) {
+                    changeVal(upload_name, (upload_file.files[0].name));
+                    const reader = new FileReader();
+                    reader.addEventListener('load', () => {
+                        thumbNail.src = reader.result;
+                        if (frame.classList.length > 1) {
+                            frame.classList.remove('visible');
+                        }
+                    });
+                    // fileURL 읽어와서 저장
+                    reader.readAsDataURL(upload_file.files[0]);
+                }
+                else {
+                    alert('이미지만 업로드 가능합니다.');
+                    return;
+                }
+            });
+            function isImage(file) {
+                return file.type.indexOf('image') >= 0;
+            }
+            function changeVal(class_name, change_name) {
+                class_name.value = change_name;
+            }
+        });
+
+        // // 사진파일 이미지키(S3 활용)로 변경 
+        function changeToS3Imagekey() {
+            AWS.config.update({
+                region: 'ap-northeast-2',
+                credentials: new AWS.CognitoIdentityCredentials({
+                    IdentityPoolId: 'us-east-1:c1a92a5c-842e-4d5b-afbb-e8c5e2dfc013',
+                })
+            })
+
+            let fileChooser = document.getElementById('upload-file').files;
+            let file = fileChooser[0];
+
+            if (file) {
+                let upload = new AWS.S3.ManagedUpload({
+                    params: {
+                        Bucket: 'hamdobucket',
+                        ContentType: file.type,
+                        Key: file.name,
+                        Body: file,
+                        ACL: 'public-read'
+                    }
+                })
+            }
+
+
         }
-      });
-    // fileURL 읽어와서 저장
-    reader.readAsDataURL(upload_file.files[0]);
-    } 
-    else {
-      alert('이미지만 업로드 가능합니다.');
-      return;
-    }
-  });
-  function isImage(file){
-    return file.type.indexOf('image') >= 0;
-  }
-  function changeVal(class_name, change_name){
-    class_name.value = change_name;
-  }
-});
-
 
     </script>
 
@@ -215,56 +256,63 @@
                         <div class="container">
                             <div class="ocr_upload text-center">
                                 <p class="ocr_upload-text" style="font-size: 24px; margin-bottom: -24px;">
-                                  프로필 사진
+                                    프로필 사진
                                 </p>
-                        </div>
+                            </div>
                             <div class="ocr_thumbnail visible">
-                              <img src="https://www.mcicon.com/wp-content/uploads/2021/02/Technology_Camera_1-copy-8.jpg" class="thumbNail" >
+                                <img src="https://www.mcicon.com/wp-content/uploads/2021/02/Technology_Camera_1-copy-8.jpg"
+                                    class="thumbNail">
                                 <!-- <label for="file">변환하기</label>
                                 <input form="ocr_form" type="submit"> -->
                             </div>
                             <div class="ocr_upload text-center">
                                 <p class="ocr_upload-text" style="margin-top: -50px;">
-                                  <span class="ocr_upload-warning">
-                                    ※ *.png / *.jpg (이미지파일)로 업로드해주세요 ※
-                                  </span>
+                                    <span class="ocr_upload-warning">
+                                        ※ *.png / *.jpg (이미지파일)로 업로드해주세요 ※
+                                    </span>
                                 </p>
-                                <form class="ocr_form" action="#" method="POST" 
-                                      enctype="multipart/form-data">
-                                  <input type="text" class="upload-name" 
-                                   value="이미지를 업로드 하세요" placeholder="이미지를 업로드 하세요" style="width: 50%;" disabled>
-                                  <label for="upload-file">[파일선택]</label>
-                                  <input name="file" type="file" id="upload-file" style="display:none;">
+                                <form class="ocr_form" action="#" method="POST" enctype="multipart/form-data">
+                                    <input type="text" class="upload-name" value="이미지를 업로드 하세요"
+                                        placeholder="이미지를 업로드 하세요" style="width: 50%;" disabled>
+                                    <label for="upload-file">[파일선택]</label>
+                                    <input name="file" type="file" id="upload-file" style="display:none;">
                                 </form>
-                              </div>
+                            </div>
                         </div>
                     </div>
                     <div class="row mt-2">
-                        <div class="col-md-12"><label class="labels">이름</label><input type="text" id="post-name" class="form-control" placeholder="기존에 있던 이름" value=""></div>
+                        <div class="col-md-12"><label class="labels">이름</label><input type="text" id="post-name"
+                                class="form-control" placeholder="기존에 있던 이름" value=""></div>
                     </div>
                     <div class="row mt-3">
                         <div class="col-md-12"><label class="labels">성별</label></div>
                         <div class="form-check radio-button-gender">
-                            <input class="form-check-input" type="radio" name="radioSex" id="flexRadioDefault1" value="남자" checked>
+                            <input class="form-check-input" type="radio" name="radioSex" id="flexRadioDefault1"
+                                value="남자" checked>
                             <label class="form-check-label" for="flexRadioDefault1">남자</label>
                         </div>
                         <div class="form-check radio-button-gender">
-                            <input class="form-check-input" type="radio" name="radioSex" id="flexRadioDefault1" value="여자">
+                            <input class="form-check-input" type="radio" name="radioSex" id="flexRadioDefault1"
+                                value="여자">
                             <label class="form-check-label" for="flexRadioDefault1">여자</label>
                         </div>
                     </div>
                     <div class="row mt-3">
-                        <div class="col-md-12"><label class="labels">MBTI</label><input type="text" id='post-mbti'class="form-control" placeholder="enter phone number" value=""></div>
+                        <div class="col-md-12"><label class="labels">MBTI</label><input type="text" id='post-mbti'
+                                class="form-control" placeholder="enter phone number" value=""></div>
                     </div>
-                
+
                     <div class="row mt-3">
-                        <div class="col-md-12"><label class="labels">자기소개 한 줄</label><input type="text" id="post-intro" class="form-control" placeholder="enter address" value=""></div>
+                        <div class="col-md-12"><label class="labels">자기소개 한 줄</label><input type="text" id="post-intro"
+                                class="form-control" placeholder="enter address" value=""></div>
                     </div>
                     <div class="row mt-3">
-                        <div class="col-md-12"><label class="labels">깃허브 아이디</label><input type="text" id="post-git-id" class="form-control" placeholder="enter email id" value=""></div>
+                        <div class="col-md-12"><label class="labels">깃허브 아이디</label><input type="text" id="post-git-id"
+                                class="form-control" placeholder="enter email id" value=""></div>
                     </div>
                     <div class="row mt-3 edit-delete-button">
-                        <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="button" onclick="postContent()">등록</button></div>
+                        <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="button"
+                                onclick="postContent()">등록</button></div>
 
                     </div>
                 </div>
@@ -276,7 +324,7 @@
     <script src="index.js"></script>
     </div>
 
-    
+
 </body>
 
 </html>
