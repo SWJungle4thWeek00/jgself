@@ -1,68 +1,81 @@
-from flask import Flask, render_template, jsonify, request
+from asyncio.windows_events import NULL
+from operator import ne
+from flask import Flask, render_template, jsonify, request, session, redirect
 import requests
 from bs4 import BeautifulSoup
 from pymongo import MongoClient  # pymongo를 임포트 하기(패키지 인스톨 먼저 해야겠죠?)
+#from flask_bcrypt import Bcrypt
+import bcrypt
 
 app = Flask(__name__)
+app.secret_key = 'jgself'
 
 client = MongoClient('localhost', 27017)  # mongoDB는 27017 포트로 돌아갑니다.
-db = client.dbsparta  # 'dbsparta'라는 이름의 db를 만들거나 사용합니다.
+db = client.jgself  # 'dbsparta'라는 이름의 db를 만들거나 사용합니다.
 
 @app.route('/')
 def home():
-    return render_template('index.html')
-
-# 생성
-
-
-@app.route('/memo', methods=['POST'])
-def post_memo():
-    title_receive = request.form['title_give']
-    content_receive = request.form['content_give']
-    memo = {'title': title_receive, 'content': content_receive}
-
-    db.memo.insert_one(memo)
-
-    return jsonify({'result': 'success'})
+    if 'userId' in session:
+        userId = session['userId']
+        return render_template('index.html')
+    else:
+        return redirect("/login")
 
 
-# 삭제
-@app.route('/memo/delete', methods=['POST'])
-def delete_memo():
-    _id_receive = request.form['_id_give']
-    db.memo.delete_one({'_id': ObjectId(_id_receive)})
-    return jsonify({'result': 'success'})
+@app.route('/login', methods=['POST', 'GET'])
+def login_user():
+    if request.method == 'POST':
+        # 1. 클라이언트로부터 데이터를 받기
+        params = request.get_json()
+        id_receive = params['id_give']
+        pw_receive = params['pw_give']  # 클라이언트로부터 pw를 받는 부분
 
-# 수정
+        encoded_new_password = pw_receive.encode('utf-8')
+
+        check = list(db.users.find({'userId' : id_receive}))
+
+        if len(check) > 0:
+            if(bcrypt.checkpw(encoded_new_password, check[0]['password'])):
+                return jsonify({'result': 'success'})
+            else:
+                return jsonify({'result': 'false'})
+        else:
+            print("id 없음!")
+            return jsonify({'result': 'false'})
+
+    else:
+        return render_template("login.html")
+
+@app.route('/signup', methods=['POST', 'GET'])
+def signUp_user():
+    if request.method == 'POST':
+        # 1. 클라이언트로부터 데이터를 받기
+        params = request.get_json()
+        id_receive = params['id_give']
+        pw_receive = params['pw_give']  # 클라이언트로부터 pw를 받는 부분
+
+        encoded_password = pw_receive.encode('utf-8')
+        hashed_password = bcrypt.hashpw(encoded_password, bcrypt.gensalt())
+        
+        db.users.insert_one({'userId':id_receive,'password': hashed_password})
+
+        return jsonify({'result': 'success'})
+
+    else:
+        return render_template("signup.html")
 
 
-@app.route('/memo/revise', methods=['POST'])
-def rivse_memo():
-    memos = []
-    result = list(db.memo.find({}))
-    for memo in result:
-        memo['_id'] = str(memo['_id'])
-        memos.append(memo)
-    _id_receive = request.form['_id_give']
-    title_receive = request.form['title_give']
-    content_receive = request.form['content_give']
-    db.memo.update_one({'_id': ObjectId(_id_receive)}, {
-                       '$set': {'title': title_receive}})
+@app.route('/idCheck', methods=['POST'])
+def read_userId():
 
-    db.memo.update_one({'_id': ObjectId(_id_receive)}, {
-                       '$set': {'content': content_receive}})
-    return jsonify({'result': 'success'})
+    params = request.get_json()
+    id_receive = params['id_give']
+    result = list(db.users.find( {'userId': id_receive}))
 
-
-@app.route('/memo/read', methods=['GET'])
-def read_memo():
-    memos = []
-    result = list(db.memo.find({}))
-    for memo in result:
-        memo['_id'] = str(memo['_id'])
-        memos.append(memo)
-    return jsonify({'result': 'success', 'memo': result})
-
+    if len(result) > 0:
+        return jsonify({'result': 'false'})
+    else:
+        return jsonify({'result': 'success'})
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)

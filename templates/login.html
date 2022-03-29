@@ -1,0 +1,121 @@
+<!Doctype html>
+<html lang="ko">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+        integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+
+    <!-- JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+
+    <!-- 구글폰트 -->
+    <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet">
+
+
+    <title>SW사관학교 정글 | sgself 로그인</title>
+
+    <!-- style -->
+    <style type="text/css">
+        #login {
+            width: 400px;
+            height: 180px;
+        }
+
+        .loginImg {
+            position: relative;
+        }
+
+        div {
+            margin-top: 10px;
+        }
+
+        #all {
+            width: 350px;
+            margin: 10px auto;
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+    <script>
+        function login() {
+                let id = $("#idForm").val();
+                let pw = $("#passwordForm").val();
+
+                if (id.length < 7 && pw.length < 7){
+                    alert('아이디 패스워드는 7자 이상으로 입력해주세요');
+                }
+                else{
+                    
+                    let obj = {"id_give" : id, "pw_give" : pw}
+
+                    $.ajax({
+                        type: "POST", // POST 방식으로 요청하겠다.
+                        url: "/login", // /login 이라는 url에 요청하겠다.
+                        headers: {'Content-Type': 'application/json'},
+                        data: JSON.stringify(obj), // 데이터를 주는 방법
+                        dataType: "json",
+                        success: function (response) { // 성공하면
+                            if (response["result"] == "success") {
+                                alert("로그인 성공!");
+                                // 3. 성공 시 페이지 새로고침하기
+                                window.location.reload();
+                            } else {
+                                alert("아이디 비밀번호를 확인해주세요!")
+                            }
+                        }
+                    })
+                }
+            }
+        
+        function moveSignUp(){
+            $.ajax({
+                type: "GET",
+                url: "/signup",
+                success: function (response){
+                    console.log("이동완료")
+                    location.href = "/signup"
+                }
+            })
+        }
+    </script>
+
+</head>
+
+<body>
+    <div id = "all">    
+        <div class="loginImg">
+                <img id="login" src="{{ url_for('static', filename='logo.png') }}" alt = "login">
+        </div>
+        <div>    
+            <label for="idForm">ID : </label>
+            <input type="text" id ="idForm" name = "idForm">
+        </div>
+        <div>
+            <label for="passwordForm">PW : </label>
+            <input type="password" id = "passwordForm" name = "passowrodForm">
+        </div>
+        <div>
+            <button onclick="login()" class="logiButton">
+                로그인
+            </button>
+            <button onclick="moveSignUp()"class="newUserButton">
+                회원가입
+            </button>
+        </div>
+    </div>
+</body>
+
+</html>
