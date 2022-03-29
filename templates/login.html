@@ -32,9 +32,9 @@
             height: 180px;
         }
 
-        .loginImg {
+        /* .loginImg {
             position: relative;
-        }
+        } */
 
         div {
             margin-top: 10px;
@@ -48,43 +48,91 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
+
+
+        #new {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .login-container {
+            margin-top: 5%;
+            margin-bottom: 5%;
+        }
+
+        .login-form-1 {
+            padding: 5%;
+            box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 9px 26px 0 rgba(0, 0, 0, 0.19);
+        }
+
+        .login-form-1 h3 {
+            text-align: center;
+            color: #333;
+        }
+
+
+        .login-container form {
+            padding: 10%;
+        }
+
+        .btnSubmit {
+            width: 50%;
+            border-radius: 1rem;
+            padding: 1.5%;
+            border: none;
+            cursor: pointer;
+        }
+
+        .login-form-1 .btnSubmit {
+            font-weight: 600;
+            color: #fff;
+            background-color: #0062cc;
+        }
+
+        .login-form-1 .ForgetPwd {
+            color: #0062cc;
+            font-weight: 600;
+            text-decoration: none;
+        }
     </style>
     <script>
         function login() {
-                let id = $("#idForm").val();
-                let pw = $("#passwordForm").val();
+            let id = $("#idForm").val();
+            let pw = $("#passwordForm").val();
 
-                if (id.length < 7 && pw.length < 7){
-                    alert('아이디 패스워드는 7자 이상으로 입력해주세요');
-                }
-                else{
-                    
-                    let obj = {"id_give" : id, "pw_give" : pw}
-
-                    $.ajax({
-                        type: "POST", // POST 방식으로 요청하겠다.
-                        url: "/login", // /login 이라는 url에 요청하겠다.
-                        headers: {'Content-Type': 'application/json'},
-                        data: JSON.stringify(obj), // 데이터를 주는 방법
-                        dataType: "json",
-                        success: function (response) { // 성공하면
-                            if (response["result"] == "success") {
-                                alert("로그인 성공!");
-                                // 3. 성공 시 페이지 새로고침하기
-                                window.location.reload();
-                            } else {
-                                alert("아이디 비밀번호를 확인해주세요!")
-                            }
-                        }
-                    })
-                }
+            if (id.length < 7 && pw.length < 7) {
+                alert('아이디 패스워드는 7자 이상으로 입력해주세요');
             }
-        
-        function moveSignUp(){
+            else {
+
+                let obj = { "id_give": id, "pw_give": pw }
+
+                $.ajax({
+                    type: "POST", // POST 방식으로 요청하겠다.
+                    url: "/login", // /login 이라는 url에 요청하겠다.
+                    headers: { 'Content-Type': 'application/json' },
+                    data: JSON.stringify(obj), // 데이터를 주는 방법
+                    dataType: "json",
+                    success: function (response) { // 성공하면
+                        if (response["result"] == "success") {
+                            alert("로그인 성공!");
+                            // 3. 성공 시 페이지 새로고침하기
+                            location.href = "/"
+                        } else {
+                            alert("아이디 비밀번호를 확인해주세요!")
+                        }
+                    }
+                })
+            }
+        }
+
+        function moveSignUp() {
             $.ajax({
                 type: "GET",
                 url: "/signup",
-                success: function (response){
+                success: function (response) {
                     console.log("이동완료")
                     location.href = "/signup"
                 }
@@ -95,27 +143,48 @@
 </head>
 
 <body>
-    <div id = "all">    
-        <div class="loginImg">
-                <img id="login" src="{{ url_for('static', filename='logo.png') }}" alt = "login">
+    <div class="row">
+        <div id="new" class="col-md-6 login-form-1 text-center">
+            <!-- <h3>Login for Form 1</h3> -->
+            <img id="login" src="https://swjungle.net/static/image/ogimage.png" alt="login">
+            <form>
+                <div class="form-group">
+                    <input type="text" id="idForm" class="form-control" placeholder="Your Email *" value="" />
+                </div>
+                <div class="form-group">
+                    <input type="password" id="passwordForm" name="idForm" class="form-control"
+                        placeholder="Your Password *" value="" />
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btnSubmit" value="로그인" onclick="login()" />
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btnSubmit" value="회원가입" onclick="moveSignUp()" />
+                </div>
+            </form>
         </div>
-        <div>    
+    </div>
+    <!-- <div id="all">
+        <div class="loginImg">
+            <img id="login" src="https://swjungle.net/static/image/ogimage.png" alt="login">
+        </div>
+        <div>
             <label for="idForm">ID : </label>
-            <input type="text" id ="idForm" name = "idForm">
+            <input type="text" id="idForm" name="idForm">
         </div>
         <div>
             <label for="passwordForm">PW : </label>
-            <input type="password" id = "passwordForm" name = "passowrodForm">
+            <input type="password" id="passwordForm" name="passowrodForm">
         </div>
         <div>
             <button onclick="login()" class="logiButton">
                 로그인
             </button>
-            <button onclick="moveSignUp()"class="newUserButton">
+            <button onclick="moveSignUp()" class="newUserButton">
                 회원가입
             </button>
         </div>
-    </div>
+    </div> -->
 </body>
 
 </html>
