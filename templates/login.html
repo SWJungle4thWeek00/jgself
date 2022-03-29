@@ -32,23 +32,9 @@
             height: 180px;
         }
 
-        /* .loginImg {
-            position: relative;
-        } */
-
         div {
             margin-top: 10px;
         }
-
-        #all {
-            width: 350px;
-            margin: 10px auto;
-            position: absolute;
-            top: 40%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
 
         #new {
             position: absolute;
@@ -60,6 +46,11 @@
         .login-container {
             margin-top: 5%;
             margin-bottom: 5%;
+        }
+
+        .form-group {
+            width: 50%;
+            margin: 10px auto;
         }
 
         .login-form-1 {
@@ -88,11 +79,12 @@
         .login-form-1 .btnSubmit {
             font-weight: 600;
             color: #fff;
-            background-color: #0062cc;
+            background-color: rgb(84, 142, 109);
         }
 
-        .login-form-1 .ForgetPwd {
-            color: #0062cc;
+        .login-form-1 #enroll {
+            color: #fff;
+            background-color: rgba(112, 112, 112, 0.445);
             font-weight: 600;
             text-decoration: none;
         }
@@ -102,8 +94,8 @@
             let id = $("#idForm").val();
             let pw = $("#passwordForm").val();
 
-            if (id.length < 7 && pw.length < 7) {
-                alert('아이디 패스워드는 7자 이상으로 입력해주세요');
+            if (id.length < 1 && pw.length < 1) {
+                alert('아이디와 비밀번호를 입력해주세요');
             }
             else {
 
@@ -156,36 +148,16 @@
                     <input type="password" id="passwordForm" name="idForm" class="form-control"
                         placeholder="Your Password *" value="" />
                 </div>
+
                 <div class="form-group">
                     <input type="submit" class="btnSubmit" value="로그인" onclick="login()" />
                 </div>
                 <div class="form-group">
-                    <input type="submit" class="btnSubmit" value="회원가입" onclick="moveSignUp()" />
+                    <input type="submit" id="enroll" class="btnSubmit" value="회원가입" onclick="moveSignUp()" />
                 </div>
             </form>
         </div>
     </div>
-    <!-- <div id="all">
-        <div class="loginImg">
-            <img id="login" src="https://swjungle.net/static/image/ogimage.png" alt="login">
-        </div>
-        <div>
-            <label for="idForm">ID : </label>
-            <input type="text" id="idForm" name="idForm">
-        </div>
-        <div>
-            <label for="passwordForm">PW : </label>
-            <input type="password" id="passwordForm" name="passowrodForm">
-        </div>
-        <div>
-            <button onclick="login()" class="logiButton">
-                로그인
-            </button>
-            <button onclick="moveSignUp()" class="newUserButton">
-                회원가입
-            </button>
-        </div>
-    </div> -->
 </body>
 
 </html>
