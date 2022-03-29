@@ -1,4 +1,3 @@
-from asyncio.windows_events import NULL
 from operator import ne
 from flask import Flask, render_template, jsonify, request, session, redirect
 import requests

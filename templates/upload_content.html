@@ -122,10 +122,17 @@
             alert(name + sex + mbti +intro + git_address);
         }
 
-        function clicklist() {
-            let selectFile = document.querySelector("#inputImage").files[0];
-            console.log(selectFile);
+        function setThumbnail(event) { 
+            var reader = new FileReader(); 
+            reader.onload = function(event) { 
+                var img = document.createElement("img"); 
+                img.setAttribute("src", event.target.result); 
+                
+                document.querySelector("div#image_container").appendChild(img); 
+                document.querySelector(".uploadImage").src = file;
+            }; reader.readAsDataURL(event.target.files[0]); 
         }
+
 
     </script>
 
@@ -136,10 +143,10 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="p-3 py-5">
-                    <div id='upload_image'>
-                        <input type="file" id="inputImage">
-                        <button id="sendButton" onclick="clicklist()">보내기</button>
-                        <img src="" class="uploadImage">
+                    <div class="image-container">
+                        <input type="file" id="image" accept="image/*" onchange="setThumbnail(event);"/> 
+                        <img src='' class='uploadImage'>
+                        <div id="image_container"></div>
                     </div>
                     <div class="d-flex flex-column align-items-center text-center p-3 py-5">
                         <img class="rounded-circle mt-4" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQF2psCzfbB611rnUhxgMi-lc2oB78ykqDGYb4v83xQ1pAbhPiB&usqp=CAU">
