@@ -85,6 +85,53 @@
             float: right;
             margin-bottom: 20px;
         }
+        .ocr_upload .ocr_upload-text {
+            font-weight: bold;
+            letter-spacing: -1px;
+        }
+        .ocr_upload .ocr_upload-warning {
+            font-size: small;
+            font-weight: normal;
+            color: #b2b2b2;
+        }
+        .ocr_thumbnail {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: auto;
+            height: 350px;
+        }   
+    .ocr_thumbnail label {
+      padding: 10px 20px;
+      background-color: rgba(0, 53, 109, 0.95);
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+    }
+    .ocr_form {
+
+        margin-bottom: 20px;
+    }
+    .thumbNail {
+      width: auto;
+      height: 250px;
+      border: 1px solid black;
+      background-color:cadetblue;
+      margin-bottom: 25px;
+    }
+    .visible {
+      visibility: hidden;
+      /* display: none 이랑 뭐가 다른지 */
+    }
+    .container input[type="submit"] {
+      position: absolute;
+      width: 0;
+      height: 0;
+      padding: 0;
+      overflow: hidden;
+      border: 0;
+    }
     </style>
 
     <script>
@@ -122,16 +169,37 @@
             alert(name + sex + mbti +intro + git_address);
         }
 
-        function setThumbnail(event) { 
-            var reader = new FileReader(); 
-            reader.onload = function(event) { 
-                var img = document.createElement("img"); 
-                img.setAttribute("src", event.target.result); 
-                
-                document.querySelector("div#image_container").appendChild(img); 
-                document.querySelector(".uploadImage").src = file;
-            }; reader.readAsDataURL(event.target.files[0]); 
+        window.addEventListener('load', function() {
+  const frame = document.querySelector(".ocr_thumbnail");
+  const thumbNail = document.querySelector(".thumbNail");
+  const upload_file = document.querySelector("#upload-file");
+  const upload_name = document.querySelector(".upload-name");
+
+  upload_file.addEventListener('input', ()=> {
+    if(isImage(upload_file.files[0])){
+      changeVal(upload_name, (upload_file.files[0].name));
+      const reader = new FileReader();
+      reader.addEventListener('load', ()=> {
+        thumbNail.src = reader.result; 
+        if(frame.classList.length>1){
+        frame.classList.remove('visible');
         }
+      });
+    // fileURL 읽어와서 저장
+    reader.readAsDataURL(upload_file.files[0]);
+    } 
+    else {
+      alert('이미지만 업로드 가능합니다.');
+      return;
+    }
+  });
+  function isImage(file){
+    return file.type.indexOf('image') >= 0;
+  }
+  function changeVal(class_name, change_name){
+    class_name.value = change_name;
+  }
+});
 
 
     </script>
@@ -144,15 +212,32 @@
             <div class="col-md-12">
                 <div class="p-3 py-5">
                     <div class="image-container">
-                        <input type="file" id="image" accept="image/*" onchange="setThumbnail(event);"/> 
-                        <img src='' class='uploadImage'>
-                        <div id="image_container"></div>
-                    </div>
-                    <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-                        <img class="rounded-circle mt-4" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQF2psCzfbB611rnUhxgMi-lc2oB78ykqDGYb4v83xQ1pAbhPiB&usqp=CAU">
-                        <!-- <span class="font-weight-bold username">Amelly</span> -->
-                        <span class="text-black-50">amelly12@bbb.com</span>
-                        <span> </span>
+                        <div class="container">
+                            <div class="ocr_upload text-center">
+                                <p class="ocr_upload-text" style="font-size: 24px; margin-bottom: -24px;">
+                                  프로필 사진
+                                </p>
+                        </div>
+                            <div class="ocr_thumbnail visible">
+                              <img src="https://www.mcicon.com/wp-content/uploads/2021/02/Technology_Camera_1-copy-8.jpg" class="thumbNail" >
+                                <!-- <label for="file">변환하기</label>
+                                <input form="ocr_form" type="submit"> -->
+                            </div>
+                            <div class="ocr_upload text-center">
+                                <p class="ocr_upload-text" style="margin-top: -50px;">
+                                  <span class="ocr_upload-warning">
+                                    ※ *.png / *.jpg (이미지파일)로 업로드해주세요 ※
+                                  </span>
+                                </p>
+                                <form class="ocr_form" action="#" method="POST" 
+                                      enctype="multipart/form-data">
+                                  <input type="text" class="upload-name" 
+                                   value="이미지를 업로드 하세요" placeholder="이미지를 업로드 하세요" style="width: 50%;" disabled>
+                                  <label for="upload-file">[파일선택]</label>
+                                  <input name="file" type="file" id="upload-file" style="display:none;">
+                                </form>
+                              </div>
+                        </div>
                     </div>
                     <div class="row mt-2">
                         <div class="col-md-12"><label class="labels">이름</label><input type="text" id="post-name" class="form-control" placeholder="기존에 있던 이름" value=""></div>
