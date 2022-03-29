@@ -1,54 +1,82 @@
-from flask import Flask, render_template, jsonify, request
+from asyncio.windows_events import NULL
+from operator import ne
+from flask import Flask, render_template, jsonify, request, session, redirect
 import requests
 from bs4 import BeautifulSoup
 from pymongo import MongoClient  # pymongo를 임포트 하기(패키지 인스톨 먼저 해야겠죠?)
+#from flask_bcrypt import Bcrypt
+import bcrypt
 
 app = Flask(__name__)
+app.secret_key = 'jgself'
 
 client = MongoClient('localhost', 27017)  # mongoDB는 27017 포트로 돌아갑니다.
-db = client.dbsparta  # 'dbsparta'라는 이름의 db를 만들거나 사용합니다.
+db = client.jgself  # 'dbsparta'라는 이름의 db를 만들거나 사용합니다.
 
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    if 'userId' in session:
+        userId = session['userId']
+        return render_template('index.html')
+    else:
+        return redirect("/login")
 
 
-@app.route('/memo', methods=['POST'])
-def post_article():
-    # 1. 클라이언트로부터 데이터를 받기
-    url_receive = request.form['url_give']  # 클라이언트로부터 url을 받는 부분
-    comment_receive = request.form['comment_give']  # 클라이언트로부터 comment를 받는 부분
+@app.route('/login', methods=['POST', 'GET'])
+def login_user():
+    if request.method == 'POST':
+        # 1. 클라이언트로부터 데이터를 받기
+        params = request.get_json()
+        id_receive = params['id_give']
+        pw_receive = params['pw_give']  # 클라이언트로부터 pw를 받는 부분
 
-    # 2. meta tag를 스크래핑하기
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'}
-    data = requests.get(url_receive, headers=headers)
-    soup = BeautifulSoup(data.text, 'html.parser')
+        encoded_new_password = pw_receive.encode('utf-8')
 
-    og_image = soup.select_one('meta[property="og:image"]')
-    og_title = soup.select_one('meta[property="og:title"]')
-    og_description = soup.select_one('meta[property="og:description"]')
+        check = list(db.users.find({'userId' : id_receive}))
 
-    url_title = og_title['content']
-    url_description = og_description['content']
-    url_image = og_image['content']
+        if len(check) > 0:
+            if(bcrypt.checkpw(encoded_new_password, check[0]['password'])):
+                return jsonify({'result': 'success'})
+            else:
+                return jsonify({'result': 'false'})
+        else:
+            print("id 없음!")
+            return jsonify({'result': 'false'})
 
-    article = {'url': url_receive, 'title': url_title, 'desc': url_description, 'image': url_image,
-               'comment': comment_receive}
+    else:
+        return render_template("login.html")
 
-    # 3. mongoDB에 데이터를 넣기
-    db.articles.insert_one(article)
+@app.route('/signup', methods=['POST', 'GET'])
+def signUp_user():
+    if request.method == 'POST':
+        # 1. 클라이언트로부터 데이터를 받기
+        params = request.get_json()
+        id_receive = params['id_give']
+        pw_receive = params['pw_give']  # 클라이언트로부터 pw를 받는 부분
 
-    return jsonify({'result': 'success'})
+        encoded_password = pw_receive.encode('utf-8')
+        hashed_password = bcrypt.hashpw(encoded_password, bcrypt.gensalt())
+        
+        db.users.insert_one({'userId':id_receive,'password': hashed_password})
+
+        return jsonify({'result': 'success'})
+
+    else:
+        return render_template("signup.html")
 
 
-@app.route('/memo', methods=['GET'])
-def read_articles():
-    # 1. mongoDB에서 _id 값을 제외한 모든 데이터 조회해오기 (Read)
-    result = list(db.articles.find({}, {'_id': 0}))
-    # 2. articles라는 키 값으로 article 정보 보내주기
-    return jsonify({'result': 'success', 'articles': result})
+@app.route('/idCheck', methods=['POST'])
+def read_userId():
+
+    params = request.get_json()
+    id_receive = params['id_give']
+    result = list(db.users.find( {'userId': id_receive}))
+
+    if len(result) > 0:
+        return jsonify({'result': 'false'})
+    else:
+        return jsonify({'result': 'success'})
 
 
 if __name__ == '__main__':
