@@ -79,110 +79,6 @@
 
     <script>
 
-        // $(document).ready(function () {
-
-        //     $("#cards-box").html("");
-
-        //     showintro();
-
-        // });
-
-        // function openClose() {
-
-        //     // id 값 post-box의 display 값이 block 이면(= 눈에 보이면)
-
-        //     if ($("#post-box").css("display") == "block") {
-
-        //         // post-box를 가리고
-
-        //         $("#post-box").hide();
-
-        //         // 다시 버튼을 클릭하면, 박스 열기를 할 수 있게 텍스트 바꿔두기
-
-        //         $("#btn-post-box").text("포스팅 박스 열기");
-
-        //     } else {
-
-        //         // 아니면(눈에 보이지 않으면) post-box를 펴라
-
-        //         $("#post-box").show();
-
-        //         // 다시 버튼을 클릭하면, 박스 닫기를 할 수 있게 텍스트 바꿔두기
-
-        //         $("#btn-post-box").text("포스팅 박스 닫기");
-
-        //     }
-
-        // }
-
-        function makeintro() {
-
-            let name = $("#post-name").val();
-
-            let comment = $("#post-comment").val();
-
-            // 2. memo에 POST 방식으로 메모 생성 요청하기
-
-            $.ajax({
-
-                type: "POST", // POST 방식으로 요청하겠다.
-
-                url: "/memo", // /memo라는 url에 요청하겠다.
-
-                data: { name_give: name, sex_give: sex, intro_give: intro }, // 데이터를 주는 방법
-
-                success: function (response) { // 성공하면
-
-                    if (response["result"] == "success") {
-
-                        alert("포스팅 성공!");
-
-                        // 3. 성공 시 페이지 새로고침하기
-
-                        window.location.reload();
-
-                    } else {
-
-                        alert("서버 오류!")
-
-                    }
-
-                }
-
-            })
-
-        }
-
-        function showIntros() {
-
-            $.ajax({
-
-                type: "GET",
-
-                url: "/memo/read",
-
-                data: {},
-
-                success: function (response) {
-
-                    let intros = response["intros"];
-
-                    console.log(intros);
-
-                    for (let i = 0; i < intros.length; i++) {
-
-                        makeCard(intros[i]["image"], intros[i]["name"], intros[i]["sex"], intros[i]["intro"]);
-
-                        // makeCard(intros[i]["image"], intros[i]["name"], intros[i]["sex"], intros[i]["mbti"], intros[i]["intro"], intros[i]["git_address"]);
-
-                    }
-
-                }
-
-            })
-
-        }
-
         function logout(){
             $.ajax({
                 type : "GET",
@@ -194,27 +90,6 @@
             })
         }
 
-// function makeCard(image, name, title, desc, comment) {
-
-//     let tempHtml = `<div class="card">
-
-//                 <img class="card-img-top" src="${image}" alt="Card image cap">
-
-//                 <div class="card-body">
-
-//                 <a href="${url}" target="_blank" class="card-title">${title}</a>
-
-//                 <p class="card-text">${desc}</p>
-
-//                 <p class="card-text comment">${comment}</p>
-
-//                 </div>
-
-//             </div>`;
-
-//     $("#cards-box").append(tempHtml);
-
-// }
 
     </script>
 
@@ -247,40 +122,6 @@
                 </div>
 
             </div>
-
-            <!-- <div class="jumbotron">
-
-<h1 class="display-4">sw 사관학교 정글 4기 b반</h1>
-
-<p class="lead">서로에 대해 알아봐요 :D</p>
-
-<div class="card" style="width: 18rem;">
-
-<img class="card-img-top"
-
-src="https://media.istockphoto.com/vectors/man-with-laptop-semi-flat-rgb-color-vector-illustration-freelancer-vector-id1301180564?k=20&m=1301180564&s=612x612&w=0&h=83_kOpJ9TE5n9BfmuT3ewkjDxi02gBmV9t1Lb2eC2Dg="
-
-alt="Card image cap">
-
-<div class="card-body">
-
-<p class="card-text">Some quick example text to build on the card title and make up the bulk of
-
-the card's content.</p>
-
-</div>
-
-</div>
-
-<hr class="my-4">
-
-<p class="lead">
-
-<a class="btn btn-primary btn-lg" href="#" role="button">포스팅박스 열기</a>
-
-</p>
-
-</div> -->
 
             <div class="wrap">
 
@@ -320,197 +161,23 @@ the card's content.</p>
 
         <div class="card-columns">
 
+            {% for profile in profiles %}
             <div class="card">
-
                 <img class="card-img-top"
-                    src="https://d2ur7st6jjikze.cloudfront.net/offer_photos/29590/185689_medium_1525763241.jpg?1525763241"
+              src="https://d2ur7st6jjikze.cloudfront.net/offer_photos/29590/185689_medium_1525763241.jpg?1525763241"
                     alt="Card image cap">
-
                 <div class="card-body">
-
-                    <p class="card-title">이름</p>
-
-                    <p class="card-text">MBTI:</p>
-
-                    <p class="card-text comment">한줄 자기소개:</p>
-
+                    <p class="card-title">이름: {{profile['name']}}</p>
+                    <p class="card-text">Mbti: {{profile['mbti']}}</p>
+                    <p class="card-text comment">한줄 자기소개: {{profile['intro']}}</p>
                 </div>
-
             </div>
-
-            <div class="card">
-
-                <img class="card-img-top"
-                    src="https://d2ur7st6jjikze.cloudfront.net/offer_photos/29590/185689_medium_1525763241.jpg?1525763241"
-                    alt="Card image cap">
-
-                <div class="card-body">
-
-                    <p class="card-title">이름:</p>
-
-                    <p class="card-text">Mbti:</p>
-
-                    <p class="card-text comment">한줄 자기소개:</p>
-
-                </div>
-
-            </div>
-
-            <div class="card">
-
-                <img class="card-img-top"
-                    src="https://d2ur7st6jjikze.cloudfront.net/offer_photos/29590/185689_medium_1525763241.jpg?1525763241"
-                    alt="Card image cap">
-
-                <div class="card-body">
-
-                    <p class="card-title">이름:</p>
-
-                    <p class="card-text">Mbti:</p>
-
-                    <p class="card-text comment">한줄 자기소개:</p>
-
-                </div>
-
-            </div>
-
-            <div class="card">
-
-                <img class="card-img-top"
-                    src="https://d2ur7st6jjikze.cloudfront.net/offer_photos/29590/185689_medium_1525763241.jpg?1525763241"
-                    alt="Card image cap">
-
-                <div class="card-body">
-
-                    <p class="card-title">이름:</p>
-
-                    <p class="card-text">Mbti:</p>
-
-                    <p class="card-text comment">한줄 자기소개:</p>
-
-                </div>
-
-            </div>
-
-            <div class="card">
-
-                <img class="card-img-top"
-                    src="https://d2ur7st6jjikze.cloudfront.net/offer_photos/29590/185689_medium_1525763241.jpg?1525763241"
-                    alt="Card image cap">
-
-                <div class="card-body">
-
-                    <p class="card-title">이름:</p>
-
-                    <p class="card-text">Mbti:</p>
-
-                    <p class="card-text comment">한줄 자기소개:</p>
-
-                </div>
-
-            </div>
+            {% endfor %}
 
         </div>
 
     </div>
 
-    <!-- <div id="cards-box" class="card-columns">
-
-<div class="card">
-
-<img class="card-img-top"
-
-src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzjjIM0neLIq_Nkb-oWldQ50MUj_xKvh7puw&usqp=CAU"
-
-alt="Card image cap">
-
-<div class="card-body">
-
-<p class="name">이름</p>
-
-<p class="sex">성별</p>
-
-<p class="intro">여기에 한줄 자기소개 </p>
-
-</div>
-
-</div>
-
-</div>
-
-<div id="cards-box" class="card-columns">
-
-<div class="card">
-
-<img class="card-img-top"
-
-src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzjjIM0neLIq_Nkb-oWldQ50MUj_xKvh7puw&usqp=CAU"
-
-alt="Card image cap">
-
-<div class="card-body">
-
-<p class="name">이름</p>
-
-<p class="sex">성별</p>
-
-<p class="intro">여기에 한줄 자기소개 </p>
-
-</div>
-
-</div>
-
-</div>
-
-<div id="cards-box" class="card-columns">
-
-<div class="card">
-
-<img class="card-img-top"
-
-src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzjjIM0neLIq_Nkb-oWldQ50MUj_xKvh7puw&usqp=CAU"
-
-alt="Card image cap">
-
-<div class="card-body">
-
-<p class="name">이름</p>
-
-<p class="sex">성별</p>
-
-<p class="intro">여기에 한줄 자기소개 </p>
-
-</div>
-
-</div>
-
-</div>
-
-<div id="cards-box" class="card-columns">
-
-<div class="card">
-
-<img class="card-img-top"
-
-src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzjjIM0neLIq_Nkb-oWldQ50MUj_xKvh7puw&usqp=CAU"
-
-alt="Card image cap">
-
-<div class="card-body">
-
-<p class="name">이름</p>
-
-<p class="sex">성별</p>
-
-<p class="intro">여기에 한줄 자기소개 </p>
-
-</div>
-
-</div>
-
-</div>
-
-</div> -->
 
 </body>
 
