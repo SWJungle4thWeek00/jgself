@@ -27,14 +27,42 @@
 
     <!-- style -->
     <style type="text/css">
-        /* #signUpImg {
-            width: 400px;
-            height: 180px;
-        } */
         .form-group {
             width: 100%;
             margin: 10px auto;
         }
+
+        .btnSubmit {
+            width: 50%;
+            border-radius: 1rem;
+            padding: 1.5%;
+            margin: 1.5%;
+            border: none;
+            cursor: pointer;
+        }
+
+        .login-form-1 {
+            padding: 5%;
+            box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 9px 26px 0 rgba(0, 0, 0, 0.19);
+        }
+
+        .login-form-1 h3 {
+            text-align: center;
+            color: #333;
+        }
+
+        .login-form-1 .btnSubmit {
+            font-weight: 600;
+            color: #fff;
+            background-color: rgb(84, 142, 109);
+        }
+
+        .login-form-1 #checkIdButton {
+            font-weight: 600;
+            color: #fff;
+            background-color: rgb(61, 168, 230);
+        }
+
 
         div {
             margin-top: 10px;
@@ -59,6 +87,10 @@
             top: 100px;
             left: 50%;
             transform: translateX(-50%);
+        }
+
+        .loginhere {
+            padding-top: 30px;
         }
 
         #checkId {
@@ -140,35 +172,38 @@
 <body>
     <div class="row">
         <div id="new" class="col-md-6 login-form-1 text-center">
-            <div id="all">
-                <div class="enroll">
-                    <H2>회원가입</H2>
-                </div>
+            <div class="enroll">
+                <H2 style="padding-bottom: 50px;">회원가입</H2>
+            </div>
+            <div class="form">
                 <div class="form-group">
-                    <input type="text" id="idForm" name="idForm" placeholder="정글 이메일을 입력해주세요">
-                    <button id="checkIdButton" onclick="idCheck()" class="logiButton">
+                    <input type="text" id="idForm" class="form-control" name="idForm" placeholder="정글 이메일을 입력해주세요">
+                    <button id="checkIdButton" onclick="idCheck()" class="btnSubmit">
                         이메일 체크
                     </button>
-
                 </div>
                 <div>
                     <label id="checkId" style="color:blue;">가입 가능</label>
                     <label id="checkId2" style="color:red;">가입 불가</label>
                 </div>
                 <div class="form-group">
-                    <input type="password" id="passwordForm" name="passowrodForm" placeholder="비밀번호">
+                    <input type="password" class="form-control" id="passwordForm" name="passowrodForm"
+                        placeholder="비밀번호">
                 </div>
                 <div class="form-group">
-                    <input type="password" id="passwordCheckForm" name="passowrodCheckForm" placeholder="비밀번호 확인">
-                </div>
-                <div>
-                    <button onclick=signUp() class="newUserButton">
-                        회원가입 완료
-                    </button>
+                    <input type="password" class="form-control" id="passwordCheckForm" name="passowrodCheckForm"
+                        placeholder="비밀번호 확인">
                 </div>
             </div>
+            <button onclick=signUp() class="btnSubmit">
+                회원가입 완료
+            </button>
+            <p class="loginhere">
+                이미 아이디가 있으신가요 ? <a href="login">Login here</a>
+            </p>
         </div>
     </div>
+
 </body>
 
 </html>
