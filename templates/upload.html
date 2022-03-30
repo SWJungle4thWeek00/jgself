@@ -147,49 +147,66 @@
             overflow: hidden;
             border: 0;
         }
+
+        .greeting {
+            display: flex;
+            justify-content: center;
+            color: rgb(133, 128, 128);
+        }
     </style>
 
     <script>
         $(document).ready(function () {
-            $("#cards-box").html("");
-
+            $('#style-img').attr('src', '../static/' + $("select[name=sb_mbti]").val() + '.png');
             $("select[name=sb_mbti]").change(function () {
-                alert($("select[name=sb_mbti] option:selected").text())
-
+                // alert($("select[name=sb_mbti] option:selected").text())
                 var img_src = '../static/' + $(this).val() + '.png';
-                $('#style-img').attr('src', img_src)
+                $('#style-img').attr('src', img_src);
             });
         });
 
+        function checkForm() {
+            if ($("#post-intro").val() == '') {
+                alert('자기소개를 입력해주세요.')
+                return false
+            } else if ($("#post-git-id").val() == '') {
+                alert('Git 아이디를 입력해주세요.')
+                return false
+            } else {
+                return true
+            }
+        }
+
         function postContent() {
-            let name = $("#post-name").val();
-            var sex = $('input[name="radioSex"]:checked').val();
-            let mbti = $("select[name=sb_mbti] option:selected").text();
-            let intro = $("#post-intro").val();
-            let git_address = $("#post-git-id").val();
+            if (checkForm()) {
+                var sex = $('input[name="radioSex"]:checked').val();
+                let mbti = $("select[name=sb_mbti] option:selected").text();
+                let intro = $("#post-intro").val();
+                let git_address = $("#post-git-id").val();
 
-            alert(name + sex + mbti + intro + git_address);
-
-            $.ajax({
-                type: "POST", // POST 방식으로 요청하겠다.
-                url: "/memo", // /memo라는 url에 요청하겠다.
-                data: {
-                    name_client: name,
-                    sex_client: sex,
-                    mbti_client: mbti,
-                    intro_client: intro,
-                    git_id_client: git_address,
-                },
-                success: function (response) { // 성공하면
-                    if (response["result"] == "success") {
-                        alert("포스팅 성공!");
-                        // 3. 성공 시 페이지 새로고침하기
-                        window.location.href = "/";
-                    } else {
-                        alert("서버 오류!")
+                $.ajax({
+                    type: "POST", // POST 방식으로 요청하겠다.
+                    url: "/memo", // /memo라는 url에 요청하겠다.
+                    data: {
+                        sex_client: sex,
+                        mbti_client: mbti,
+                        intro_client: intro,
+                        git_id_client: git_address,
+                    },
+                    success: function (response) { // 성공하면
+                        if (response["result"] == "success") {
+                            alert("등록 완료!");
+                            // 3. 성공 시 페이지 새로고침하기
+                            window.location.href = "/";
+                        } else {
+                            alert("서버 오류!")
+                        }
                     }
-                }
-            })
+                })
+            } else {
+
+            }
+
         }
 
 
@@ -205,9 +222,8 @@
                     <div class="image-container">
                     </div>
                     <div class="row mt-2">
-                        <div class="col-md-12"><label class="labels">이름</label><input type="text" id="post-name"
-                                class="form-control" placeholder="당신의 이름이 궁금해요" value=""></div>
-
+                        <div class="col-md-12"><label class="labels greeting">{{ user_name }}님 반갑습니다!<br>아래 정보를
+                                입력해주세요.<br><br></label></div>
                     </div>
                     <div class="row mt-3">
                         <div class="col-md-12"><label class="labels">성별</label></div>

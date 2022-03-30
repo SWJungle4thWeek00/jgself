@@ -17,6 +17,10 @@
         crossorigin="anonymous"></script>
 
 
+    <!-- AWS S3 사용 -->
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.891.0.min.js"></script>
+
+
     <title>SW사관학교 정글 | 나홀로 메모장</title>
 
     <!-- style -->
@@ -24,7 +28,6 @@
         body {
             background: rgb(84, 142, 109)
         }
-
 
         .row {
             margin-left: 140px;
@@ -84,7 +87,6 @@
             margin-right: 20px;
             font-size: 16px;
         }
-
 
         .edit-delete-button {
             float: right;
@@ -146,19 +148,52 @@
             border: 0;
         }
 
+        body {
+            margin-top: 20px;
+        }
+
+        .comment-wrapper .panel-body {
+            max-height: 650px;
+            overflow: auto;
+        }
+
+        .comment-wrapper .media-list .media img {
+            width: 64px;
+            height: 64px;
+            overflow: auto;
+            border: 2px solid #e5e7e8;
+        }
+
+        .comment-wrapper .media-list .media {
+            border-bottom: 1px dashed #efefef;
+            margin-bottom: 25px;
+        }
+
+        .commentPanel {
+            top: 1000px;
+        }
     </style>
 
     <script>
         $(document).ready(function () {
             $("#cards-box").html("");
+
+            $("select[name=sb_mbti]").change(function () {
+                alert($("select[name=sb_mbti] option:selected").text())
+
+                var img_src = '../static/' + $(this).val() + '.png';
+                $('#style-img').attr('src', img_src)
+            });
         });
 
         function postContent() {
             let name = $("#post-name").val();
             var sex = $('input[name="radioSex"]:checked').val();
-            let mbti = $("#post-mbti").val();
+            let mbti = $("select[name=sb_mbti] option:selected").text();
             let intro = $("#post-intro").val();
             let git_address = $("#post-git-id").val();
+
+            alert(name + sex + mbti + intro + git_address);
 
             $.ajax({
                 type: "POST", // POST 방식으로 요청하겠다.
@@ -170,52 +205,17 @@
                     intro_client: intro,
                     git_id_client: git_address,
                 },
-
                 success: function (response) { // 성공하면
                     if (response["result"] == "success") {
                         alert("포스팅 성공!");
                         // 3. 성공 시 페이지 새로고침하기
-                        window.location.reload();
+                        window.location.href = "/";
                     } else {
                         alert("서버 오류!")
                     }
                 }
             })
-            alert(name + sex + mbti + intro + git_address);
         }
-
-        window.addEventListener('load', function () {
-            const frame = document.querySelector(".ocr_thumbnail");
-            const thumbNail = document.querySelector(".thumbNail");
-            const upload_file = document.querySelector("#upload-file");
-            const upload_name = document.querySelector(".upload-name");
-
-            upload_file.addEventListener('input', () => {
-                if (isImage(upload_file.files[0])) {
-                    changeVal(upload_name, (upload_file.files[0].name));
-                    const reader = new FileReader();
-                    reader.addEventListener('load', () => {
-                        thumbNail.src = reader.result;
-                        if (frame.classList.length > 1) {
-                            frame.classList.remove('visible');
-                        }
-                    });
-                    // fileURL 읽어와서 저장
-                    reader.readAsDataURL(upload_file.files[0]);
-                }
-                else {
-                    alert('이미지만 업로드 가능합니다.');
-                    return;
-                }
-            });
-            function isImage(file) {
-                return file.type.indexOf('image') >= 0;
-            }
-            function changeVal(class_name, change_name) {
-                class_name.value = change_name;
-            }
-        });
-
 
 
     </script>
@@ -223,79 +223,142 @@
 </head>
 
 <body>
-    <div class="container rounded bg-white mt-5 mb-5">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="p-3 py-5">
-                    <div class="image-container">
-                        <div class="container">
-                            <div class="ocr_upload text-center">
-                                <p class="ocr_upload-text" style="font-size: 24px; margin-bottom: -24px;">
-                                    프로필 사진
-                                </p>
-                            </div>
-                            <div class="ocr_thumbnail visible">
-                                <img src="https://www.mcicon.com/wp-content/uploads/2021/02/Technology_Camera_1-copy-8.jpg"
-                                    class="thumbNail">
-                                <!-- <label for="file">변환하기</label>
-                                <input form="ocr_form" type="submit"> -->
-                            </div>
-                            <div class="ocr_upload text-center">
-                                <p class="ocr_upload-text" style="margin-top: -50px;">
-                                    <span class="ocr_upload-warning">
-                                        ※ *.png / *.jpg (이미지파일)로 업로드해주세요 ※
-                                    </span>
-                                </p>
-                                <form class="ocr_form" action="#" method="POST" enctype="multipart/form-data">
-                                    <input type="text" class="upload-name" value="이미지를 업로드 하세요"
-                                        placeholder="이미지를 업로드 하세요" style="width: 50%;" disabled>
-                                    <label for="upload-file">[파일선택]</label>
-                                    <input name="file" type="file" id="upload-file" style="display:none;">
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mt-2">
-                        <div class="col-md-12"><label class="labels">이름</label><input type="text" id="post-name"
-                                class="form-control" placeholder="당신의 이름이 궁금해요" value=""></div>
 
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-md-12"><label class="labels">성별</label></div>
-                        <div class="form-check radio-button-gender">
-                            <input class="form-check-input" type="radio" name="radioSex" id="flexRadioDefault1"
-                                value="남자" checked>
-                            <label class="form-check-label" for="flexRadioDefault1">남자</label>
-                        </div>
-                        <div class="form-check radio-button-gender">
-                            <input class="form-check-input" type="radio" name="radioSex" id="flexRadioDefault1"
-                                value="여자">
 
-                            <label class="form-check-label" for="flexRadioDefault1">여자</label>
+    <div class="container rounded bg-white mt-5 mb-5" style="display:flex; flex-direction: row"">
+        <div class=" container">
+        <div class="bootstrap snippets bootdeys">
+            <div class="col-sm-12 " style="top: 80px;">
+                <div class="comment-wrapper">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <div class="media-list">
+                                <li class="media">
+                                </li>
+                                <li class="media">
+                                    <div class="media-body">
+                                        <span class="text-muted pull-right">
+                                        </span>
+                                        <a href="#" class="pull-left">
+                                            <strong class="text-success">@LaurenceCorreil</strong>
+                                        </a>
+                                        <p>
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                            Lorem ipsum dolor <a href="#">#ipsumdolor </a>adipiscing elit.
+                                        </p>
+                                    </div>
+                                </li>
+                                </li>
+                                <li class="media">
+                                    <div class="media-body">
+                                        <span class="text-muted pull-right">
+                                        </span>
+                                        <a href="#" class="pull-left">
+                                            <strong class="text-success">@LaurenceCorreil</strong>
+                                        </a>
+                                        <p>
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                            Lorem ipsum dolor <a href="#">#ipsumdolor </a>adipiscing elit.
+                                        </p>
+                                    </div>
+                                </li>
+                                </li>
+                                <li class="media">
+                                    <div class="media-body">
+                                        <span class="text-muted pull-right">
+                                        </span>
+                                        <a href="#" class="pull-left">
+                                            <strong class="text-success">@LaurenceCorreil</strong>
+                                        </a>
+                                        <p>
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                            Lorem ipsum dolor <a href="#">#ipsumdolor </a>adipiscing elit.
+                                        </p>
+                                    </div>
+                                </li>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-md-12"><label class="labels">MBTI</label><input type="text" id='post-mbti'
-                                class="form-control" placeholder="당신의 MBTI가 궁금해요" value=""></div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-md-12"><label class="labels">자기소개 한 줄</label><input type="text" id="post-intro"
-                                class="form-control" placeholder="당신을 한줄로 표현해 주세요" value=""></div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-md-12"><label class="labels">깃허브 아이디</label><input type="text" id="post-git-id"
-                                class="form-control" placeholder="깃허브 아이디를 알려주세요" value=""></div>
+                        <div class="commentPanel mt-5">
+                            <P>방명록 입력</P>
+                            <div class="panel-body">
+                                <textarea class="form-control" placeholder="한마디 남겨주세요 .. " rows="3"></textarea>
+                                <br>
+                                <button type="button" class="btn btn-info pull-right">Post</button>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="">
+        <div class="col-md-12" style="width:400px">
+            <div class="p-3 py-5">
+                <div class="image-container">
+                </div>
+                <div class=" mt-2">
+                    <div class="col-md-12"><label class="labels">저는 {{ user_name }} 입니다</label><input type="text"
+                            id="post-name" class="form-control" placeholder="당신의 이름이 궁금해요" value=""></div>
 
+                </div>
+                <div class=" mt-3">
+                    <div class="col-md-12"><label class="labels">성별</label></div>
+                    <div class="form-check radio-button-gender">
+                        <input class="form-check-input" type="radio" name="radioSex" id="flexRadioDefault1" value="남자"
+                            checked>
+                        <label class="form-check-label" for="flexRadioDefault1">남자</label>
+                    </div>
+                    <div class="form-check radio-button-gender">
+                        <input class="form-check-input" type="radio" name="radioSex" id="flexRadioDefault1" value="여자">
+                        <label class="form-check-label" for="flexRadioDefault1">여자</label>
+                    </div>
+                </div>
+                <div class=" mt-3">
+                    <div class="col-md-12"><label class="labels">MBTI</label></div>
+                    <div class="col-md-12">
+                        <select id='style-select' class='centered' name="sb_mbti">
+                            <option value="INTJ">INTJ</option>
+                            <option value="INTP">INTP</option>
+                            <option value="ENTJ">ENTJ</option>
+                            <option value="ENTP">ENTP</option>
+                            <option value="INFJ">INFJ</option>
+                            <option value="INFP">INFP</option>
+                            <option value="ENFJ">ENFJ</option>
+                            <option value="ENFP">ENFP</option>
+                            <option value="ISTJ">ISTJ</option>
+                            <option value="ISFJ">ISFJ</option>
+                            <option value="ESTJ">ESTJ</option>
+                            <option value="ESFJ">ESFJ</option>
+                            <option value="ISTP">ISTP</option>
+                            <option value="ISFP">ISFP</option>
+                            <option value="ESTP">ESTP</option>
+                            <option value="ESFP">ESFP</option>
+                        </select>
+                    </div>
+                    <div class="col-md-7" style="float: none; margin:0 auto;">
+                        <img id='style-img' class='centered' crossorigin="anonymous" height=256></img>
+                    </div>
+                    <div id="output">
+                    </div>
+                </div>
+
+                <div class=" mt-3">
+                    <div class="col-md-12"><label class="labels">자기소개 한 줄</label><input type="text" id="post-intro"
+                            class="form-control" placeholder="당신을 한줄로 표현해 주세요" value=""></div>
+                </div>
+                <div class=" mt-3">
+                    <div class="col-md-12"><label class="labels">깃허브 아이디</label><input type="text" id="post-git-id"
+                            class="form-control" placeholder="깃허브 아이디를 알려주세요" value=""></div>
+
+                </div>
+
+            </div>
         </div>
     </div>
     </div>
     </div>
-    </div>
 
-    <script src="index.js"></script>
     </div>
 
 
