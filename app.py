@@ -90,23 +90,19 @@ def login_user():
     else:
         return render_template("login.html")
 
-@app.route('/comment', methods=['POST', 'GET'])
-def signUp_user():
-    if request.method == 'POST':
-        # 1. 클라이언트로부터 데이터를 받기
-        params = request.get_json()
-        id_receive = params['id_give']
-        pw_receive = params['pw_give']  # 클라이언트로부터 pw를 받는 부분
+@app.route('/comment', methods=['POST'])
+def postComment():
+    # 1. 클라이언트로부터 데이터를 받기
+    params = request.get_json()
+    id_receive = params['id_give']
+    pw_receive = params['pw_give']  # 클라이언트로부터 pw를 받는 부분
 
-        encoded_password = pw_receive.encode('utf-8')
-        hashed_password = bcrypt.hashpw(encoded_password, bcrypt.gensalt())
-        
-        db.users.insert_one({'userId':id_receive,'password': hashed_password})
+    encoded_password = pw_receive.encode('utf-8')
+    hashed_password = bcrypt.hashpw(encoded_password, bcrypt.gensalt())
 
-        return jsonify({'result': 'success'})
+    db.users.insert_one({'userId':id_receive,'password': hashed_password})
 
-    else:
-        return render_template("signup.html")
+    return jsonify({'result': 'success'})
 
 
 @app.route('/idCheck', methods=['POST'])
@@ -135,7 +131,7 @@ def getUpload():
 
 
 
-@app.route('/signup', methods=['POST'])
+@app.route('/comment/doyoung', methods=['POST'])
 def getPostComments():
     # 1. 클라이언트로부터 데이터를 받기
     params = request.get_json()
@@ -146,6 +142,25 @@ def getPostComments():
     db.comments.insert_one({'receiver':receiver_client,'writer': writer_client, 'comment':comment_client})
 
     return jsonify({'result': 'success'})
+
+
+@app.route('/signup', methods=['POST', 'GET'])
+def signUp_user():
+    if request.method == 'POST':
+        # 1. 클라이언트로부터 데이터를 받기
+        params = request.get_json()
+        id_receive = params['id_give']
+        pw_receive = params['pw_give']  # 클라이언트로부터 pw를 받는 부분
+
+        encoded_password = pw_receive.encode('utf-8')
+        hashed_password = bcrypt.hashpw(encoded_password, bcrypt.gensalt())
+        
+        db.users.insert_one({'userId':id_receive,'password': hashed_password})
+
+        return jsonify({'result': 'success'})
+
+    else:
+        return render_template("signup.html")
 
   
 @app.route('/profile-detail', methods=['GET'])

@@ -195,21 +195,6 @@
             getComments()
         });
 
-        function getComments() {
-            $.ajax({
-                type: "GET",
-                url: "/comments",
-                data: {},
-                success: function (response) {
-                    let articles = response["articles"];
-                    console.log(articles);
-                    for (let i = 0; i < articles.length; i++) {
-                        makeCard(articles[i]["image"], articles[i]["url"], articles[i]["title"], articles[i]["desc"], articles[i]["comment"]);
-                    }
-                }
-            })
-        }
-
         function postComment() {
             writer = 'testtest'
             comment = $('#textarea').val()
