@@ -169,9 +169,10 @@ def profileDetail():
         userId = session['userId']
         profileId = request.args.get("profileId")
 
-        profiles = list(db.profiles.find({'userId' : profileId}))
+        profiles = list(db.profiles.find({'name' : profileId}))
+        print(profiles)
         comments = list(db.comments.find({'profileId' : profileId}))
-        return render_template('detail.html', userId=userId, profiles = profiles, comments = comments)
+        return render_template('detail.html', userId=userId, profiles = profiles[0], comments = comments)
     else:
         return redirect("/login")
 
