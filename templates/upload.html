@@ -157,14 +157,17 @@
 
     <script>
         $(document).ready(function () {
+            $('input:radio[name=radioSex]:input[value="{{ jinja_sex }}"]').attr("checked", true);
+            $('#style-select').val('{{ jinja_mbti }}').prop('selecte', true)
+
             $('#style-img').attr('src', '../static/' + $("select[name=sb_mbti]").val() + '.png');
             $("select[name=sb_mbti]").change(function () {
                 // alert($("select[name=sb_mbti] option:selected").text())
                 var img_src = '../static/' + $(this).val() + '.png';
                 $('#style-img').attr('src', img_src);
             });
-            $('#style-select').val('{{ jinja_mbti }}').prop('selecte', true)
-            $('input:radio[name=radioSex]:input[value="{{ jinja_sex }}"]').attr("checked", true);
+            
+            
         });
 
         function checkForm() {
