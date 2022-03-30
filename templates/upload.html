@@ -161,9 +161,6 @@
             let intro = $("#post-intro").val();
             let git_address = $("#post-git-id").val();
 
-
-            changeToS3Imagekey() // 사진 파일 이미지키로 변경
-
             $.ajax({
                 type: "POST", // POST 방식으로 요청하겠다.
                 url: "/memo", // /memo라는 url에 요청하겠다.
@@ -187,65 +184,6 @@
             alert(name + sex + mbti + intro + git_address);
         }
 
-        window.addEventListener('load', function () {
-            const frame = document.querySelector(".ocr_thumbnail");
-            const thumbNail = document.querySelector(".thumbNail");
-            const upload_file = document.querySelector("#upload-file");
-            const upload_name = document.querySelector(".upload-name");
-
-            upload_file.addEventListener('input', () => {
-                if (isImage(upload_file.files[0])) {
-                    changeVal(upload_name, (upload_file.files[0].name));
-                    const reader = new FileReader();
-                    reader.addEventListener('load', () => {
-                        thumbNail.src = reader.result;
-                        if (frame.classList.length > 1) {
-                            frame.classList.remove('visible');
-                        }
-                    });
-                    // fileURL 읽어와서 저장
-                    reader.readAsDataURL(upload_file.files[0]);
-                }
-                else {
-                    alert('이미지만 업로드 가능합니다.');
-                    return;
-                }
-            });
-            function isImage(file) {
-                return file.type.indexOf('image') >= 0;
-            }
-            function changeVal(class_name, change_name) {
-                class_name.value = change_name;
-            }
-        });
-
-
-        // // 사진파일 이미지키(S3 활용)로 변경 
-        function changeToS3Imagekey() {
-            AWS.config.update({
-                region: 'ap-northeast-2',
-                credentials: new AWS.CognitoIdentityCredentials({
-                    IdentityPoolId: 'us-east-1:c1a92a5c-842e-4d5b-afbb-e8c5e2dfc013',
-                })
-            })
-
-            let fileChooser = document.getElementById('upload-file').files;
-            let file = fileChooser[0];
-
-            if (file) {
-                let upload = new AWS.S3.ManagedUpload({
-                    params: {
-                        Bucket: 'hamdobucket',
-                        ContentType: file.type,
-                        Key: file.name,
-                        Body: file,
-                        ACL: 'public-read'
-                    }
-                })
-            }
-
-
-        }
 
 
     </script>
@@ -258,32 +196,6 @@
             <div class="col-md-12">
                 <div class="p-3 py-5">
                     <div class="image-container">
-                        <div class="container">
-                            <div class="ocr_upload text-center">
-                                <p class="ocr_upload-text" style="font-size: 24px; margin-bottom: -24px;">
-                                    프로필 사진
-                                </p>
-                            </div>
-                            <div class="ocr_thumbnail visible">
-                                <img src="https://www.mcicon.com/wp-content/uploads/2021/02/Technology_Camera_1-copy-8.jpg"
-                                    class="thumbNail">
-                                <!-- <label for="file">변환하기</label>
-                                <input form="ocr_form" type="submit"> -->
-                            </div>
-                            <div class="ocr_upload text-center">
-                                <p class="ocr_upload-text" style="margin-top: -50px;">
-                                    <span class="ocr_upload-warning">
-                                        ※ *.png / *.jpg (이미지파일)로 업로드해주세요 ※
-                                    </span>
-                                </p>
-                                <form class="ocr_form" action="#" method="POST" enctype="multipart/form-data">
-                                    <input type="text" class="upload-name" value="이미지를 업로드 하세요"
-                                        placeholder="이미지를 업로드 하세요" style="width: 50%;" disabled>
-                                    <label for="upload-file">[파일선택]</label>
-                                    <input name="file" type="file" id="upload-file" style="display:none;">
-                                </form>
-                            </div>
-                        </div>
                     </div>
                     <div class="row mt-2">
                         <div class="col-md-12"><label class="labels">이름</label><input type="text" id="post-name"
@@ -305,8 +217,17 @@
                     </div>
                     <div class="row mt-3">
                         <div class="col-md-12"><label class="labels">MBTI</label><input type="text" id='post-mbti'
-                                class="form-control" placeholder="당신의 MBTI가 궁금해요" value=""></div>
-
+                                class="form-control" placeholder="당신의 MBTI가 궁금해요" value="">
+                        </div>
+                        <div>
+                            <select name="location">
+                                <option value="1">one</option>
+                                <option value="2">two</option>
+                                <option value="3">three</option>
+                            </select>
+                        </div>
+                        <div id="output">
+                        </div>
                     </div>
 
                     <div class="row mt-3">
@@ -329,7 +250,6 @@
     </div>
     </div>
 
-    <script src="index.js"></script>
     </div>
 
 
