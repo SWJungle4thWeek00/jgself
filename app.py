@@ -10,6 +10,7 @@ app = Flask(__name__)
 app.secret_key = 'jgself'
 
 client = MongoClient('mongodb://test:test@13.209.40.199',27017)  # mongoDB는 27017 포트로 돌아갑니다.
+# client = MongoClient('mongodb://test:test@13.209.40.199',27017)
 db = client.jgself  # 'dbsparta'라는 이름의 db를 만들거나 사용합니다.
 
 @app.route('/memo', methods=['POST'])
@@ -89,7 +90,7 @@ def login_user():
     else:
         return render_template("login.html")
 
-@app.route('/signup', methods=['POST', 'GET'])
+@app.route('/comment', methods=['POST', 'GET'])
 def signUp_user():
     if request.method == 'POST':
         # 1. 클라이언트로부터 데이터를 받기
@@ -133,5 +134,22 @@ def getUpload():
     return render_template('upload.html', user_name = temp_list[0]['name'], user_id = session['userId'])
 
 
+@app.route('/signup', methods=['POST', 'GET'])
+def getPostComments():
+    if request.method == 'POST':
+        # 1. 클라이언트로부터 데이터를 받기
+        params = request.get_json()
+        receiver_client = params['receiver']
+        writer_client = params['writer']
+        comment_client = params['comment']  # 클라이언트로부터 pw를 받는 부분
+
+        db.comments.insert_one({'receiver':receiver_client,'writer': writer_client, 'comment':comment_client})
+
+        return jsonify({'result': 'success'})
+
+    else:
+        comments = list(db.comments.find())
+        return render_template("detail.html", comments = comments)
+        
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
