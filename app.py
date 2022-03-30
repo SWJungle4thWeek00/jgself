@@ -36,8 +36,8 @@ def post_article():
         }
 
         # 3. mongoDB에 데이터를 넣기
-        if len(list(db.profiles.find({'userId' : id_receive} ) ) ) != 0:
-            db.profiles.delete_one({'userId':id_receive})    
+        if len(list(db.profiles.find({'userId' : userId} ) ) ) != 0:
+            db.profiles.delete_one({'userId':userId})    
         
         db.profiles.insert_one(content)
 
@@ -151,9 +151,11 @@ def getUpload():
 def postComment():
     receiver = request.form['receiver_client']
     writer = request.form['writer_client']
+    writer_name = list(db.checkEmails.find({'email' : session['userId']}))[0]['name']
     comment = request.form['comment_client']  # 클라이언트로부터 pw를 받는 부분
+    
 
-    db.comments.insert_one({'profileId':receiver,'writer': writer, 'comment':comment})
+    db.comments.insert_one({'profileId':receiver, 'writer': writer, 'writer_name': writer_name, 'comment':comment})
 
     return jsonify({'result': 'success'})
 
@@ -191,8 +193,7 @@ def profileDetail():
         img = url_for('static', filename = profiles[0]['mbti']+'.png')
             
         return render_template('detail.html', userId=userId, profiles = profiles[0], comments = comments, 
-                                            count=count, receiver = emails, receiver_name = profiles[0]['name'], profiles_row = profiles, imgUrl = img,
-                                            writer_name = list(db.profiles.find({'userId' : userId}))[0]['name']
+                                            count=count, receiver = emails, receiver_name = profiles[0]['name'], profiles_row = profiles, imgUrl = img
         )
 
     else:
