@@ -157,10 +157,15 @@
             overflow: auto;
         }
 
+        .media-list {
+            overflow: auto;
+            height: 450px;
+
+        }
+
         .comment-wrapper .media-list .media img {
             width: 64px;
             height: 64px;
-            overflow: auto;
             border: 2px solid #e5e7e8;
         }
 
@@ -170,7 +175,11 @@
         }
 
         .commentPanel {
-            top: 1000px;
+            margin-top: 60px;
+        }
+
+        .form-control {
+            margin-top: 10px;
         }
     </style>
 
@@ -234,6 +243,17 @@
                         <div class="panel-heading">
                             <div class="media-list">
                                 <li class="media">
+                                    <div class="media-body">
+                                        <span class="text-muted pull-right">
+                                        </span>
+                                        <a href="#" class="pull-left">
+                                            <strong class="text-success">@LaurenceCorreil</strong>
+                                        </a>
+                                        <p>
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                            Lorem ipsum dolor <a href="#">#ipsumdolor </a>adipiscing elit.
+                                        </p>
+                                    </div>
                                 </li>
                                 <li class="media">
                                     <div class="media-body">
@@ -248,6 +268,18 @@
                                         </p>
                                     </div>
                                 </li>
+                                <li class="media">
+                                    <div class="media-body">
+                                        <span class="text-muted pull-right">
+                                        </span>
+                                        <a href="#" class="pull-left">
+                                            <strong class="text-success">@LaurenceCorreil</strong>
+                                        </a>
+                                        <p>
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                            Lorem ipsum dolor <a href="#">#ipsumdolor </a>adipiscing elit.
+                                        </p>
+                                    </div>
                                 </li>
                                 <li class="media">
                                     <div class="media-body">
@@ -262,6 +294,18 @@
                                         </p>
                                     </div>
                                 </li>
+                                <li class="media">
+                                    <div class="media-body">
+                                        <span class="text-muted pull-right">
+                                        </span>
+                                        <a href="#" class="pull-left">
+                                            <strong class="text-success">@LaurenceCorreil</strong>
+                                        </a>
+                                        <p>
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                            Lorem ipsum dolor <a href="#">#ipsumdolor </a>adipiscing elit.
+                                        </p>
+                                    </div>
                                 </li>
                                 <li class="media">
                                     <div class="media-body">
@@ -278,8 +322,10 @@
                                 </li>
                             </div>
                         </div>
-                        <div class="commentPanel mt-5">
-                            <P>방명록 입력</P>
+                        <div class="commentPanel">
+                            <hr size="1" noshade align="center" width="100%"
+                                style="color:rgb(0, 0, 0);border-style:dotted">
+                            </hr>
                             <div class="panel-body">
                                 <textarea class="form-control" placeholder="한마디 남겨주세요 .. " rows="3"></textarea>
                                 <br>
