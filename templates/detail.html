@@ -196,6 +196,7 @@
         });
 
         function postComment() {
+            receiver = '{{ userId }}'
             writer = 'testtest'
             comment = $('#textarea').val()
 
@@ -203,8 +204,9 @@
                 type: "POST", // POST 방식으로 요청하겠다.
                 url: "/comment", // /memo라는 url에 요청하겠다.
                 data: {
-                    writer_client: writer,
-                    comment_client: comment,
+                    'receiver_client': receiver,
+                    'writer_client': writer,
+                    'comment_client': comment,
                 },
                 success: function (response) { // 성공하면
                     if (response["result"] == "success") {
@@ -255,9 +257,9 @@
                                 style="color:rgb(0, 0, 0);border-style:dotted">
                             </hr>
                             <div class="panel-body">
-                                <textarea class="form-control" placeholder="한마디 남겨주세요 .. " rows="3"></textarea>
+                                <textarea id='textarea' class="form-control" placeholder="한마디 남겨주세요 .. " rows="3"></textarea>
                                 <br>
-                                <button type="button" class="btn btn-info pull-right">Post</button>
+                                <button type="button" class="btn btn-info pull-right" onclick="postComment()">Post</button>
                                 <div class="clearfix"></div>
                             </div>
                         </div>

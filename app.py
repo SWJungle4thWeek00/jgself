@@ -90,19 +90,6 @@ def login_user():
     else:
         return render_template("login.html")
 
-@app.route('/comment', methods=['POST'])
-def postComment():
-    # 1. 클라이언트로부터 데이터를 받기
-    params = request.get_json()
-    id_receive = params['id_give']
-    pw_receive = params['pw_give']  # 클라이언트로부터 pw를 받는 부분
-
-    encoded_password = pw_receive.encode('utf-8')
-    hashed_password = bcrypt.hashpw(encoded_password, bcrypt.gensalt())
-
-    db.users.insert_one({'userId':id_receive,'password': hashed_password})
-
-    return jsonify({'result': 'success'})
 
 
 @app.route('/idCheck', methods=['POST'])
@@ -131,15 +118,18 @@ def getUpload():
 
 
 
-@app.route('/comment/doyoung', methods=['POST'])
-def getPostComments():
-    # 1. 클라이언트로부터 데이터를 받기
-    params = request.get_json()
-    receiver_client = params['receiver']
-    writer_client = params['writer']
-    comment_client = params['comment']  # 클라이언트로부터 pw를 받는 부분
+@app.route('/comment', methods=['POST'])
+def postComment():
+    # 1. 클라이언트로부터 데이터를 받기    
+    print(request.form['receiver_client'])
+    print(request.form['writer_client'])
+    print(request.form['comment_client'])
+    
+    receiver = request.form['receiver_client']
+    writer = request.form['writer_client']
+    comment = request.form['comment_client']  # 클라이언트로부터 pw를 받는 부분
 
-    db.comments.insert_one({'receiver':receiver_client,'writer': writer_client, 'comment':comment_client})
+    db.comments.insert_one({'profileId':receiver,'writer': writer, 'comment':comment})
 
     return jsonify({'result': 'success'})
 
