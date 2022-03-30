@@ -76,9 +76,6 @@
 
         }
 
-        #profile-img {
-            cursor: pointer;
-        }
         .logout {
             float: left;
         }
@@ -101,17 +98,17 @@
             location.href = "/upload"
         }
         $(document).ready(function () {
-            $('.card').click(function(e){
+            $('.card').click(function (e) {
                 var indexNum = $(this).index();
-                title = $(`div.card-columns > div:nth-child(${indexNum+1}) > div > p.card-title`).text()
+                title = $(`div.card-columns > div:nth-child(${indexNum + 1}) > div > p.card-title`).text()
                 title = title.substr(4)
 
                 $.ajax({
-                type : "GET",
-                url : "/profile-detail?"+"profileId="+title,
-                success: function (response){
-                        location.href="/profile-detail?"+"profileId="+title
-                }
+                    type: "GET",
+                    url: "/profile-detail?" + "profileId=" + title,
+                    success: function (response) {
+                        location.href = "/profile-detail?" + "profileId=" + title
+                    }
                 })
             })
         });
