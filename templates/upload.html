@@ -195,7 +195,7 @@
                     },
                     success: function (response) { // 성공하면
                         if (response["result"] == "success") {
-                            alert("포스팅 성공!");
+                            alert("등록 완료!");
                             // 3. 성공 시 페이지 새로고침하기
                             window.location.href = "/";
                         } else {
@@ -242,7 +242,6 @@
                         <div class="col-md-12"><label class="labels">MBTI</label></div>
                         <div class="col-md-12">
                             <select id='style-select' class='centered' name="sb_mbti">
-                                <option>-선택-</option>
                                 <option value="INTJ">INTJ</option>
                                 <option value="INTP">INTP</option>
                                 <option value="ENTJ">ENTJ</option>

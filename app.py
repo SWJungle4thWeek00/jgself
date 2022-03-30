@@ -134,22 +134,33 @@ def getUpload():
     return render_template('upload.html', user_name = temp_list[0]['name'], user_id = session['userId'])
 
 
-@app.route('/signup', methods=['POST', 'GET'])
+
+@app.route('/signup', methods=['POST'])
 def getPostComments():
-    if request.method == 'POST':
-        # 1. 클라이언트로부터 데이터를 받기
-        params = request.get_json()
-        receiver_client = params['receiver']
-        writer_client = params['writer']
-        comment_client = params['comment']  # 클라이언트로부터 pw를 받는 부분
+    # 1. 클라이언트로부터 데이터를 받기
+    params = request.get_json()
+    receiver_client = params['receiver']
+    writer_client = params['writer']
+    comment_client = params['comment']  # 클라이언트로부터 pw를 받는 부분
 
-        db.comments.insert_one({'receiver':receiver_client,'writer': writer_client, 'comment':comment_client})
+    db.comments.insert_one({'receiver':receiver_client,'writer': writer_client, 'comment':comment_client})
 
-        return jsonify({'result': 'success'})
+    return jsonify({'result': 'success'})
 
+  
+@app.route('/profile-detail', methods=['GET'])
+def profileDetail():
+    if 'userId' in session:
+        userId = session['userId']
+        profileId = request.args.get("profileId")
+
+        profiles = list(db.profiles.find({'userId' : profileId}))
+        comments = list(db.comments.find({'profileId' : profileId}))
+        return render_template('detail.html', userId=userId, profiles = profiles, comments = comments)
     else:
-        comments = list(db.comments.find())
-        return render_template("detail.html", comments = comments)
-        
+        return redirect("/login")
+
+
+
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)

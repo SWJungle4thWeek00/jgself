@@ -76,6 +76,8 @@
 
         }
 
+        #profile-img {
+            cursor: pointer;
         .logout {
             float: left;
         }
@@ -97,6 +99,22 @@
         function goUpload() {
             location.href = "/upload"
         }
+        $(document).ready(function () {
+            $('.card').click(function(e){
+                var indexNum = $(this).index();
+                title = $(`div.card-columns > div:nth-child(${indexNum+1}) > div > p.card-title`).text()
+                title = title.substr(4)
+
+                $.ajax({
+                type : "GET",
+                url : "/profile-detail?"+"profileId="+title,
+                success: function (response){
+                        location.href="/profile-detail?"+"profileId="+title
+                }
+                })
+            })
+        });
+
 
 
     </script>
@@ -134,32 +152,6 @@
             </div>
 
             <div class="wrap">
-
-            </div>
-
-            <div id="post-box" class="form-post" style="display:none">
-
-                <div>
-
-                    <div class="form-group">
-
-                        <label for="post-url">아티클 URL</label>
-
-                        <input id="post-url" class="form-control" placeholder="">
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <label for="post-comment">간단 코멘트</label>
-
-                        <textarea id="post-comment" class="form-control" rows="2"></textarea>
-
-                    </div>
-
-                    <button type="button" class="btn btn-primary" onclick="postArticle()">저장</button>
-
-                </div>
 
             </div>
 
