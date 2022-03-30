@@ -16,15 +16,15 @@ db = client.jgself  # 'dbsparta'라는 이름의 db를 만들거나 사용합니
 def post_article():
     if 'userId' in session:
         userId = session['userId']
+        name = list(db.checkEmails.find({'email':userId}))[0]['name']
 
         # 1. 클라이언트로부터 데이터를 받기
-        name = request.form['name_client']  # 클라이언트로부터 url을 받는 부분
+        # name = request.form['name_client']  # 클라이언트로부터 url을 받는 부분
         sex = request.form['sex_client']  # 클라이언트로부터 comment를 받는 부분
         mbti = request.form['mbti_client']  # 클라이언트로부터 comment를 받는 부분
         intro = request.form['intro_client']  # 클라이언트로부터 comment를 받는 부분
         git_id = request.form['git_id_client']  # 클라이언트로부터 comment를 받는 부분
         
-
         content = {
             'userId' : userId,
             'name': name, 
@@ -48,7 +48,7 @@ def home():
     if 'userId' in session:
         userId = session['userId']
 
-        profiles = list(db.profiles.find({'userId' : {'$ne' : userId}}))
+        profiles = list(db.profiles.find())
         return render_template('index.html', userId=userId, profiles = profiles)
     else:
         return redirect("/login")
@@ -121,7 +121,10 @@ def logout():
 
 @app.route('/upload', methods=['GET'])
 def getUpload():
-    return render_template('upload.html')
+    
+    # userName = db.checkEmails.find_one({'email' : session['userId']},{'name' : True})
+    temp_list = list(db.checkEmails.find({'email':session['userId']}))
+    return render_template('upload.html', user_name = temp_list[0]['name'], user_id = session['userId'])
 
 
 if __name__ == '__main__':
