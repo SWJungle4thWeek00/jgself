@@ -1,5 +1,5 @@
 from operator import ne
-from flask import Flask, make_response, render_template, jsonify, request, session, redirect, make_response
+from flask import Flask, make_response, render_template, jsonify, request, session, redirect, make_response, url_for
 import requests
 from bs4 import BeautifulSoup
 from pymongo import MongoClient  # pymongo를 임포트 하기(패키지 인스톨 먼저 해야겠죠?)
@@ -49,7 +49,13 @@ def home():
         userId = session['userId']
 
         profiles = list(db.profiles.find())
-        return render_template('index.html', userId=userId, profiles = profiles)
+
+        imgFiles = []
+        for i in range(len(profiles)):
+            img = url_for('static', filename = profiles[i]['mbti']+'.png')
+            imgFiles.append(img)
+
+        return render_template('index.html', userId=userId, profiles = profiles, imgFiles = imgFiles)
     else:
         return redirect("/login")
 
