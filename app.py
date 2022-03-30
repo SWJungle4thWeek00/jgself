@@ -162,7 +162,9 @@ def profileDetail():
         profiles = list(db.profiles.find({'name' : profileId}))
         emails = profiles[0]['userId']
         comments = list(db.comments.find({'profileId' : emails}))
-        return render_template('detail.html', userId=userId, profiles = profiles[0], comments = comments)
+
+        count = len(comments)
+        return render_template('detail.html', userId=userId, profiles = profiles[0], comments = comments, count=count)
     else:
         return redirect("/login")
 
