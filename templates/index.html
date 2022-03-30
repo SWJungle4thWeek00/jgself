@@ -75,6 +75,10 @@
             border-radius: 5px;
 
         }
+
+        #profile-img {
+            cursor: pointer;
+        }
     </style>
 
     <script>
@@ -93,6 +97,22 @@
         function goUpload(){
             location.href = "/upload"
         }
+        $(document).ready(function () {
+            $('.card').click(function(e){
+                var indexNum = $(this).index();
+                title = $(`div.card-columns > div:nth-child(${indexNum+1}) > div > p.card-title`).text()
+                title = title.substr(4)
+
+                $.ajax({
+                type : "GET",
+                url : "/profile-detail?"+"profileId="+title,
+                success: function (response){
+                        location.href="/profile-detail?"+"profileId="+title
+                }
+                })
+            })
+        });
+
 
 
     </script>
@@ -116,7 +136,7 @@
 
             <div class="col-5 text-center" style="width: 1.5rem;">
 
-                <a><img class="card-img-top" onclick="goUpload()"
+                <a><img id = "profile-img"class="card-img-top" onclick="goUpload()"
                         src="https://drive.google.com/uc?id=1v4hsKRr8GAImlGsdruCdEGXICcTaglHe" style="width: 70%;"></a>
 
                 <div class="card-body">
@@ -131,32 +151,6 @@
 
             </div>
 
-            <div id="post-box" class="form-post" style="display:none">
-
-                <div>
-
-                    <div class="form-group">
-
-                        <label for="post-url">아티클 URL</label>
-
-                        <input id="post-url" class="form-control" placeholder="">
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <label for="post-comment">간단 코멘트</label>
-
-                        <textarea id="post-comment" class="form-control" rows="2"></textarea>
-
-                    </div>
-
-                    <button type="button" class="btn btn-primary" onclick="postArticle()">저장</button>
-
-                </div>
-
-            </div>
-
         </div>
 
         <hr class="my-4">
@@ -166,7 +160,7 @@
         <div class="card-columns">
 
             {% for profile in profiles %}
-            <div class="card">
+            <div class="card"">
                 <img class="card-img-top"
               src="https://d2ur7st6jjikze.cloudfront.net/offer_photos/29590/185689_medium_1525763241.jpg?1525763241"
                     alt="Card image cap">

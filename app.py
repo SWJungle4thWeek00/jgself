@@ -124,5 +124,18 @@ def getUpload():
     return render_template('upload.html')
 
 
+@app.route('/profile-detail', methods=['GET'])
+def profileDetail():
+    if 'userId' in session:
+        userId = session['userId']
+        profileId = request.args.get("profileId")
+
+        profiles = list(db.profiles.find({'userId' : profileId}))
+        comments = list(db.comments.find({'profileId' : profileId}))
+        return render_template('detail.html', userId=userId, profiles = profiles, comments = comments)
+    else:
+        return redirect("/login")
+
+
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
