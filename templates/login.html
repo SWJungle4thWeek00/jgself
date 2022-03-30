@@ -99,6 +99,7 @@
     </style>
     <script>
         function login() {
+
             let id = $("#idForm").val();
             let pw = $("#passwordForm").val();
 
@@ -118,8 +119,11 @@
                     success: function (response) { // 성공하면
                         if (response["result"] == "success") {
                             // 3. 성공 시 페이지 새로고침하기
-                            window.location.reload();
-                            location.href = "/"
+
+                            // window.location.reload();
+
+                            window.location.href = "/";
+                            console.log('test!!!')
                         } else {
                             alert("아이디 비밀번호를 확인해주세요!")
 

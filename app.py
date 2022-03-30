@@ -9,7 +9,8 @@ import bcrypt
 app = Flask(__name__)
 app.secret_key = 'jgself'
 
-client = MongoClient('localhost', 27017)  # mongoDB는 27017 포트로 돌아갑니다.
+client = MongoClient('mongodb://test:test@13.209.40.199',27017)  # mongoDB는 27017 포트로 돌아갑니다.
+db = client.jgself  # 'dbsparta'라는 이름의 db를 만들거나 사용합니다.
 
 @app.route('/memo', methods=['POST'])
 def post_article():
@@ -33,9 +34,6 @@ def post_article():
     db.contents.insert_one(content)
 
     return jsonify({'result': 'success'})
-
-db = client.jgself  # 'dbsparta'라는 이름의 db를 만들거나 사용합니다.
-
 
 @app.route('/')
 def home():
@@ -61,6 +59,7 @@ def login_user():
         check = list(db.users.find({'userId' : id_receive}))
 
         if len(check) > 0:
+    
             if(bcrypt.checkpw(encoded_new_password, check[0]['password'])):
                 resp = make_response("Login 완료!")
                 resp.set_cookie('userId',id_receive)
