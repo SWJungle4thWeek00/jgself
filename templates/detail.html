@@ -194,8 +194,8 @@
         });
 
         function postComment() {
-            receiver = '{{ userId }}'
-            writer = '{{ writer }}'
+            receiver = '{{ receiver }}'
+            writer = '{{ userId }}'
             comment = $('#textarea').val()
 
             $.ajax({
@@ -208,8 +208,7 @@
                 },
                 success: function (response) { // 성공하면
                     if (response["result"] == "success") {
-                        alert("포스팅 성공!");
-                        // 3. 성공 시 페이지 새로고침하기
+                       
                         window.location.reload();
                     } else {
                         alert("서버 오류!")
@@ -243,7 +242,7 @@
                                         <span class="text-muted pull-right">
                                         </span>
                                         <a href="#" class="pull-left">
-                                            <strong class="text-success">{{comment['writer']}}</strong>
+                                            <strong class="text-success">{{writer_name}}</strong>
                                         </a>
                                         <p>
                                             {{comment['comment']}}
@@ -275,61 +274,27 @@
                 <div class="image-container">
                 </div>
                 <div class=" mt-2">
-                    <div class="col-md-12"><label class="labels">저는 {{ profiles['name'] }} 입니다</label><input type="text"
-                            id="post-name" class="form-control" placeholder="당신의 이름이 궁금해요" value=""></div>
-
-                </div>
-                <div class=" mt-3">
-                    <div class="col-md-12"><label class="labels">성별</label></div>
-                    <div class="form-check radio-button-gender">
-                        <input class="form-check-input" type="radio" name="radioSex" id="flexRadioDefault1" value="남자"
-                            checked>
-                        <label class="form-check-label" for="flexRadioDefault1">남자</label>
-                    </div>
-                    <div class="form-check radio-button-gender">
-                        <input class="form-check-input" type="radio" name="radioSex" id="flexRadioDefault1" value="여자">
-                        <label class="form-check-label" for="flexRadioDefault1">여자</label>
+                    <div class="col-md-12"><label class="labels">이름 : {{ profiles_row[0]['name'] }}</label>
                     </div>
                 </div>
                 <div class=" mt-3">
-                    <div class="col-md-12"><label class="labels">MBTI</label></div>
-                    <div class="col-md-12">
-                        <select id='style-select' class='centered' name="sb_mbti">
-                            <option value="INTJ">INTJ</option>
-                            <option value="INTP">INTP</option>
-                            <option value="ENTJ">ENTJ</option>
-                            <option value="ENTP">ENTP</option>
-                            <option value="INFJ">INFJ</option>
-                            <option value="INFP">INFP</option>
-                            <option value="ENFJ">ENFJ</option>
-                            <option value="ENFP">ENFP</option>
-                            <option value="ISTJ">ISTJ</option>
-                            <option value="ISFJ">ISFJ</option>
-                            <option value="ESTJ">ESTJ</option>
-                            <option value="ESFJ">ESFJ</option>
-                            <option value="ISTP">ISTP</option>
-                            <option value="ISFP">ISFP</option>
-                            <option value="ESTP">ESTP</option>
-                            <option value="ESFP">ESFP</option>
-                        </select>
-                    </div>
+                    <div class="col-md-12"><label class="labels">성별 : {{ profiles_row[0]['sex'] }}</label></div>
+                    
+                </div>
+                <div class=" mt-3">
+                    <div class="col-md-12"><label class="labels">MBTI : {{ profiles_row[0]['mbti'] }}</label></div>
+                    
                     <div class="col-md-7" style="float: none; margin:0 auto;">
-                        <img id='style-img' class='centered' crossorigin="anonymous" height=256></img>
+                        <img id='style-img' class='centered' crossorigin="anonymous" height=256 src="{{ imgUrl }}"></img>
                     </div>
                     <div id="output">
                     </div>
                 </div>
 
                 <div class=" mt-3">
-                    <div class="col-md-12"><label class="labels">자기소개 한 줄</label><input type="text" id="post-intro"
-                            class="form-control" placeholder="당신을 한줄로 표현해 주세요" value=""></div>
-                </div>
+                    <div class="col-md-12"><label class="labels">소개 : {{ profiles_row[0]['intro'] }}</label></div>
                 <div class=" mt-3">
-                    <div class="col-md-12"><label class="labels">깃허브 아이디</label><input type="text" id="post-git-id"
-                            class="form-control" placeholder="깃허브 아이디를 알려주세요" value=""></div>
-
-                </div>
-
+                    <div class="col-md-12"><label class="labels">Git 아이디 : {{ profiles_row[0]['git_id'] }}<br><br><br><br><br><br><br></label></div>
             </div>
         </div>
     </div>

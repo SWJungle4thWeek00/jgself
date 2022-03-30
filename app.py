@@ -36,6 +36,9 @@ def post_article():
         }
 
         # 3. mongoDB에 데이터를 넣기
+        if len(list(db.profiles.find({'userId' : id_receive} ) ) ) != 0:
+            db.profiles.delete_one({'userId':id_receive})    
+        
         db.profiles.insert_one(content)
 
         return jsonify({'result': 'success'})
@@ -111,20 +114,41 @@ def logout():
 
 @app.route('/upload', methods=['GET'])
 def getUpload():
-    
+
     # userName = db.checkEmails.find_one({'email' : session['userId']},{'name' : True})
     temp_list = list(db.checkEmails.find({'email':session['userId']}))
-    return render_template('upload.html', user_name = temp_list[0]['name'], user_id = session['userId'])
+    user_row_in_checkEmails = temp_list[0]
+    user_row_in_profiles = list(db.profiles.find({'userId': user_row_in_checkEmails['email']}))
 
+    if len(user_row_in_profiles) != 0:
+        print('here');
+        return render_template(
+            'upload.html', 
+            user_name = user_row_in_profiles[0]['name'], 
+            user_id = session['userId'],
+            jinja_sex = user_row_in_profiles[0]['sex'],
+            jinja_mbti = user_row_in_profiles[0]['mbti'],
+            jinja_intro = user_row_in_profiles[0]['intro'],
+            jinja_git_id = user_row_in_profiles[0]['git_id']
+        );
+    else:
+        print(user_row_in_profiles);
+        return render_template(
+            'upload.html', 
+            user_name = user_row_in_checkEmails['name'], 
+            user_id = session['userId'],
+            jinja_sex = '남자',
+            jinja_mbti = 'INTJ',
+            jinja_intro = '',
+            jinja_git_id = ''
+        ); 
+        
+    
 
+    
 
 @app.route('/comment', methods=['POST'])
 def postComment():
-    # 1. 클라이언트로부터 데이터를 받기    
-    print(request.form['receiver_client'])
-    print(request.form['writer_client'])
-    print(request.form['comment_client'])
-    
     receiver = request.form['receiver_client']
     writer = request.form['writer_client']
     comment = request.form['comment_client']  # 클라이언트로부터 pw를 받는 부분
@@ -157,15 +181,19 @@ def signUp_user():
 def profileDetail():
     if 'userId' in session:
         userId = session['userId']
+        
         profileId = request.args.get("profileId")
-
         profiles = list(db.profiles.find({'name' : profileId}))
         emails = profiles[0]['userId']
-        writer = profiles[0]['name']
         comments = list(db.comments.find({'profileId' : emails}))
         count = len(comments)
-        
-        return render_template('detail.html', userId=userId, profiles = profiles[0], comments = comments, count=count, writer = writer)
+
+        img = url_for('static', filename = profiles[0]['mbti']+'.png')
+            
+        return render_template('detail.html', userId=userId, profiles = profiles[0], comments = comments, 
+                                            count=count, receiver = emails, receiver_name = profiles[0]['name'], profiles_row = profiles, imgUrl = img,
+                                            writer_name = list(db.profiles.find({'userId' : userId}))[0]['name']
+        )
 
     else:
         return redirect("/login")
