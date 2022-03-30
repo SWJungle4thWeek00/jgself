@@ -234,84 +234,20 @@
                     <div class="panel panel-info">
                         <div class="panel-heading">
                             <div class="media-list">
+                                {% for comment in comments %}
                                 <li class="media">
                                     <div class="media-body">
                                         <span class="text-muted pull-right">
                                         </span>
                                         <a href="#" class="pull-left">
-                                            <strong class="text-success">@LaurenceCorreil</strong>
+                                            <strong class="text-success">{{comment['writer']}}</strong>
                                         </a>
                                         <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                            Lorem ipsum dolor <a href="#">#ipsumdolor </a>adipiscing elit.
+                                            {{comment['comment']}}
                                         </p>
                                     </div>
                                 </li>
-                                <li class="media">
-                                    <div class="media-body">
-                                        <span class="text-muted pull-right">
-                                        </span>
-                                        <a href="#" class="pull-left">
-                                            <strong class="text-success">@LaurenceCorreil</strong>
-                                        </a>
-                                        <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                            Lorem ipsum dolor <a href="#">#ipsumdolor </a>adipiscing elit.
-                                        </p>
-                                    </div>
-                                </li>
-                                <li class="media">
-                                    <div class="media-body">
-                                        <span class="text-muted pull-right">
-                                        </span>
-                                        <a href="#" class="pull-left">
-                                            <strong class="text-success">@LaurenceCorreil</strong>
-                                        </a>
-                                        <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                            Lorem ipsum dolor <a href="#">#ipsumdolor </a>adipiscing elit.
-                                        </p>
-                                    </div>
-                                </li>
-                                <li class="media">
-                                    <div class="media-body">
-                                        <span class="text-muted pull-right">
-                                        </span>
-                                        <a href="#" class="pull-left">
-                                            <strong class="text-success">@LaurenceCorreil</strong>
-                                        </a>
-                                        <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                            Lorem ipsum dolor <a href="#">#ipsumdolor </a>adipiscing elit.
-                                        </p>
-                                    </div>
-                                </li>
-                                <li class="media">
-                                    <div class="media-body">
-                                        <span class="text-muted pull-right">
-                                        </span>
-                                        <a href="#" class="pull-left">
-                                            <strong class="text-success">@LaurenceCorreil</strong>
-                                        </a>
-                                        <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                            Lorem ipsum dolor <a href="#">#ipsumdolor </a>adipiscing elit.
-                                        </p>
-                                    </div>
-                                </li>
-                                <li class="media">
-                                    <div class="media-body">
-                                        <span class="text-muted pull-right">
-                                        </span>
-                                        <a href="#" class="pull-left">
-                                            <strong class="text-success">@LaurenceCorreil</strong>
-                                        </a>
-                                        <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                            Lorem ipsum dolor <a href="#">#ipsumdolor </a>adipiscing elit.
-                                        </p>
-                                    </div>
-                                </li>
+                                {% endfor %}
                             </div>
                         </div>
                         <div class="commentPanel">
@@ -336,7 +272,7 @@
                 <div class="image-container">
                 </div>
                 <div class=" mt-2">
-                    <div class="col-md-12"><label class="labels">저는 {{ user_name }} 입니다</label><input type="text"
+                    <div class="col-md-12"><label class="labels">저는 {{ profiles['name'] }} 입니다</label><input type="text"
                             id="post-name" class="form-control" placeholder="당신의 이름이 궁금해요" value=""></div>
 
                 </div>
