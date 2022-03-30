@@ -160,12 +160,17 @@
         .comment-wrapper .media-list .media img {
             width: 64px;
             height: 64px;
+            overflow: auto;
             border: 2px solid #e5e7e8;
         }
 
         .comment-wrapper .media-list .media {
             border-bottom: 1px dashed #efefef;
             margin-bottom: 25px;
+        }
+
+        .commentPanel {
+            top: 1000px;
         }
     </style>
 
@@ -223,65 +228,64 @@
     <div class="container rounded bg-white mt-5 mb-5" style="display:flex; flex-direction: row"">
         <div class=" container">
         <div class="bootstrap snippets bootdeys">
-            <div class="col-sm-12 " style="top:200px">
+            <div class="col-sm-12 " style="top: 80px;">
                 <div class="comment-wrapper">
                     <div class="panel panel-info">
                         <div class="panel-heading">
-                            <ul class="media-list">
+                            <div class="media-list">
                                 <li class="media">
-                                    <a href="#" class="pull-left">
-                                        <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
-                                    </a>
-                                    <div class="media-body">
-                                        <span class="text-muted pull-right">
-                                            <small class="text-muted">30 min ago</small>
-                                        </span>
-                                        <strong class="text-success">@MartinoMont</strong>
-                                        <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                            Lorem ipsum dolor sit amet, <a href="#">#consecteturadipiscing </a>.
-                                        </p>
-                                    </div>
                                 </li>
                                 <li class="media">
-                                    <a href="#" class="pull-left">
-                                        <img src="https://bootdey.com/img/Content/user_2.jpg" alt="" class="img-circle">
-                                    </a>
                                     <div class="media-body">
                                         <span class="text-muted pull-right">
-                                            <small class="text-muted">30 min ago</small>
                                         </span>
-                                        <strong class="text-success">@LaurenceCorreil</strong>
+                                        <a href="#" class="pull-left">
+                                            <strong class="text-success">@LaurenceCorreil</strong>
+                                        </a>
                                         <p>
                                             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                                             Lorem ipsum dolor <a href="#">#ipsumdolor </a>adipiscing elit.
                                         </p>
                                     </div>
                                 </li>
+                                </li>
                                 <li class="media">
-                                    <a href="#" class="pull-left">
-                                        <img src="https://bootdey.com/img/Content/user_3.jpg" alt="" class="img-circle">
-                                    </a>
                                     <div class="media-body">
                                         <span class="text-muted pull-right">
-                                            <small class="text-muted">30 min ago</small>
                                         </span>
-                                        <strong class="text-success">@JohnNida</strong>
+                                        <a href="#" class="pull-left">
+                                            <strong class="text-success">@LaurenceCorreil</strong>
+                                        </a>
                                         <p>
-                                            Lorem ipsum dolor <a href="#">#sitamet</a> sit amet, consectetur
-                                            adipiscing
-                                            elit.
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                            Lorem ipsum dolor <a href="#">#ipsumdolor </a>adipiscing elit.
                                         </p>
                                     </div>
                                 </li>
-                            </ul>
-                            Comment panel
+                                </li>
+                                <li class="media">
+                                    <div class="media-body">
+                                        <span class="text-muted pull-right">
+                                        </span>
+                                        <a href="#" class="pull-left">
+                                            <strong class="text-success">@LaurenceCorreil</strong>
+                                        </a>
+                                        <p>
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                            Lorem ipsum dolor <a href="#">#ipsumdolor </a>adipiscing elit.
+                                        </p>
+                                    </div>
+                                </li>
+                            </div>
                         </div>
-                        <div class="panel-body">
-                            <textarea class="form-control" placeholder="write a comment..." rows="3"></textarea>
-                            <br>
-                            <button type="button" class="btn btn-info pull-right">Post</button>
-                            <div class="clearfix"></div>
+                        <div class="commentPanel mt-5">
+                            <P>방명록 입력</P>
+                            <div class="panel-body">
+                                <textarea class="form-control" placeholder="한마디 남겨주세요 .. " rows="3"></textarea>
+                                <br>
+                                <button type="button" class="btn btn-info pull-right">Post</button>
+                                <div class="clearfix"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -294,8 +298,8 @@
                 <div class="image-container">
                 </div>
                 <div class=" mt-2">
-                    <div class="col-md-12"><label class="labels">이름</label><input type="text" id="post-name"
-                            class="form-control" placeholder="당신의 이름이 궁금해요" value=""></div>
+                    <div class="col-md-12"><label class="labels">저는 {{ user_name }} 입니다</label><input type="text"
+                            id="post-name" class="form-control" placeholder="당신의 이름이 궁금해요" value=""></div>
 
                 </div>
                 <div class=" mt-3">
