@@ -185,34 +185,26 @@
 
     <script>
         $(document).ready(function () {
-            $("#cards-box").html("");
-
             $("select[name=sb_mbti]").change(function () {
                 alert($("select[name=sb_mbti] option:selected").text())
 
                 var img_src = '../static/' + $(this).val() + '.png';
                 $('#style-img').attr('src', img_src)
             });
+
+            getComments()
         });
 
-        function postContent() {
-            let name = $("#post-name").val();
-            var sex = $('input[name="radioSex"]:checked').val();
-            let mbti = $("select[name=sb_mbti] option:selected").text();
-            let intro = $("#post-intro").val();
-            let git_address = $("#post-git-id").val();
-
-            alert(name + sex + mbti + intro + git_address);
+        function postComment() {
+            writer = 'testtest'
+            comment = $('#textarea').val()
 
             $.ajax({
                 type: "POST", // POST 방식으로 요청하겠다.
-                url: "/memo", // /memo라는 url에 요청하겠다.
+                url: "/comment", // /memo라는 url에 요청하겠다.
                 data: {
-                    name_client: name,
-                    sex_client: sex,
-                    mbti_client: mbti,
-                    intro_client: intro,
-                    git_id_client: git_address,
+                    writer_client: writer,
+                    comment_client: comment,
                 },
                 success: function (response) { // 성공하면
                     if (response["result"] == "success") {
