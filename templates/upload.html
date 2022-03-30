@@ -152,25 +152,23 @@
     <script>
         $(document).ready(function () {
             $("#cards-box").html("");
+
+            $("select[name=sb_mbti]").change(function () {
+                alert($("select[name=sb_mbti] option:selected").text())
+
+                var img_src = '../static/' + $(this).val() + '.png';
+                $('#style-img').attr('src', img_src)
+            });
         });
 
         function postContent() {
             let name = $("#post-name").val();
             var sex = $('input[name="radioSex"]:checked').val();
+            let mbti = $("select[name=sb_mbti] option:selected").text();
             let intro = $("#post-intro").val();
             let git_address = $("#post-git-id").val();
 
-            $("select[name=sb_mbti]").change(function () {
-                alert($("select[name=sb_mbti] option:selected").text())
-                console.log($(this).val()); //value값 가져오기
-                console.log($("select[name=sb_mbti] option:selected").text()); //text값 가져오기
-
-                var img_src = '../static/' + $(this).val() + '.png';
-
-                $('#style-img').attr('src', img_src)
-                
-            });
-
+            alert(name + sex + mbti + intro + git_address);
 
             $.ajax({
                 type: "POST", // POST 방식으로 요청하겠다.
@@ -178,6 +176,7 @@
                 data: {
                     name_client: name,
                     sex_client: sex,
+                    mbti_client: mbti,
                     intro_client: intro,
                     git_id_client: git_address,
                 },
@@ -185,14 +184,14 @@
                     if (response["result"] == "success") {
                         alert("포스팅 성공!");
                         // 3. 성공 시 페이지 새로고침하기
-                        window.location.reload();
+                        window.location.href = "/";
                     } else {
                         alert("서버 오류!")
                     }
                 }
             })
-            alert(name + sex  + intro + git_address);
         }
+
 
     </script>
 
@@ -224,29 +223,29 @@
                         </div>
                     </div>
                     <div class="row mt-3">
-                        <div class="col-md-12"><label class="labels">MBTI</label><input type="text" id='post-mbti'
-                                class="form-control" placeholder="당신의 MBTI가 궁금해요" value="">
-                                <select id='style-select' class='centered' name="sb_mbti">
-                                    <option value="INTJ">INTJ</option>
-                                    <option value="INTP">INTP</option>
-                                    <option value="ENTJ">ENTJ</option>
-                                    <option value="ENTP">ENTP</option>
-                                    <option value="INFJ">INFJ</option>
-                                    <option value="INFP">INFP</option>
-                                    <option value="ENFJ">ENFJ</option>
-                                    <option value="ENFP">ENFP</option>
-                                    <option value="ISTJ">ISTJ</option>
-                                    <option value="ISFJ">ISFJ</option>
-                                    <option value="ESTJ">ESTJ</option>
-                                    <option value="ESFJ">ESFJ</option>
-                                    <option value="ISTP">ISTP</option>
-                                    <option value="ISFP">ISFP</option>
-                                    <option value="ESTP">ESTP</option>
-                                    <option value="ESFP">ESFP</option>
-                                </select>
+                        <div class="col-md-12"><label class="labels">MBTI</label></div>
+                        <div class="col-md-12">
+                            <select id='style-select' class='centered' name="sb_mbti">
+                                <option value="INTJ">INTJ</option>
+                                <option value="INTP">INTP</option>
+                                <option value="ENTJ">ENTJ</option>
+                                <option value="ENTP">ENTP</option>
+                                <option value="INFJ">INFJ</option>
+                                <option value="INFP">INFP</option>
+                                <option value="ENFJ">ENFJ</option>
+                                <option value="ENFP">ENFP</option>
+                                <option value="ISTJ">ISTJ</option>
+                                <option value="ISFJ">ISFJ</option>
+                                <option value="ESTJ">ESTJ</option>
+                                <option value="ESFJ">ESFJ</option>
+                                <option value="ISTP">ISTP</option>
+                                <option value="ISFP">ISFP</option>
+                                <option value="ESTP">ESTP</option>
+                                <option value="ESFP">ESFP</option>
+                            </select>
                         </div>
-                        <div>
-                            <img id='style-img' class = 'centered' crossorigin="anonymous" height=256></img>
+                        <div class="col-md-7" style="float: none; margin:0 auto;">
+                            <img id='style-img' class='centered' crossorigin="anonymous" height=256></img>
                         </div>
                         <div id="output">
                         </div>
