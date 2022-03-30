@@ -65,7 +65,7 @@ def login_user():
                 resp = make_response("Login 완료!")
                 resp.set_cookie('userId',id_receive)
                 session['userId'] = id_receive
-
+                
                 return jsonify({'result': 'success'})
             else:
                 return jsonify({'result': 'false'})

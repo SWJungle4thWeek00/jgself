@@ -110,8 +110,8 @@
                     success: function (response) { // 성공하면
                         if (response["result"] == "success") {
                             // 3. 성공 시 페이지 새로고침하기
-                            window.location.reload();
-                            location.href = "/"
+                            //window.location.reload();
+                            window.location.href = "/";
                         } else {
                             alert("아이디 비밀번호를 확인해주세요!")
 
@@ -150,10 +150,10 @@
                 </div>
 
                 <div class="form-group">
-                    <input type="submit" class="btnSubmit" value="로그인" onclick="login()" />
+                    <input type="button" class="btnSubmit" value="로그인" onclick="login()" />
                 </div>
                 <div class="form-group">
-                    <input type="submit" id="enroll" class="btnSubmit" value="회원가입" onclick="moveSignUp()" />
+                    <input type="button" id="enroll" class="btnSubmit" value="회원가입" onclick="moveSignUp()" />
                 </div>
             </form>
         </div>
