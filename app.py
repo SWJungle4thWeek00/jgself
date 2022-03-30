@@ -161,8 +161,9 @@ def profileDetail():
 
         profiles = list(db.profiles.find({'name' : profileId}))
         emails = profiles[0]['userId']
+        writer = profiles[0]['name']
         comments = list(db.comments.find({'profileId' : emails}))
-        return render_template('detail.html', userId=userId, profiles = profiles[0], comments = comments)
+        return render_template('detail.html', userId=userId, profiles = profiles[0], comments = comments, writer = writer)
     else:
         return redirect("/login")
 
