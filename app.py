@@ -160,8 +160,8 @@ def profileDetail():
         profileId = request.args.get("profileId")
 
         profiles = list(db.profiles.find({'name' : profileId}))
-        print(profiles)
-        comments = list(db.comments.find({'profileId' : profileId}))
+        emails = profiles[0]['userId']
+        comments = list(db.comments.find({'profileId' : emails}))
         return render_template('detail.html', userId=userId, profiles = profiles[0], comments = comments)
     else:
         return redirect("/login")
