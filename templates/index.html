@@ -75,22 +75,26 @@
             border-radius: 5px;
 
         }
+
+        .logout {
+            float: left;
+        }
     </style>
 
     <script>
 
-        function logout(){
+        function logout() {
             $.ajax({
-                type : "GET",
-                url : "/logout",
-                success: function (response){
+                type: "GET",
+                url: "/logout",
+                success: function (response) {
                     alert("로그아웃 성공!");
                     window.location.reload();
                 }
             })
         }
 
-        function goUpload(){
+        function goUpload() {
             location.href = "/upload"
         }
 
@@ -101,23 +105,25 @@
 
 <body>
 
-    <button type="button" class="btn btn-info" onclick="logout()">logout</button>
+
 
     <div class="wrap">
 
         <div class="row">
 
             <div class="col-7 text-center my-auto">
-                <img src="https://swjungle.net/static/image/ogimage.png" class="img-fluid" alt="Responsive image"
-                    width="300px">
+                <div class="logout">
+                    <p><button type="button" class="btn btn-info" onclick="logout()">logout</button></p>
+                </div>
+                <img src="../static/main.png" class="img-fluid" alt="Responsive image" width="300px">
                 <h2 class="display-4.5">sw 사관학교 정글 4기 b반</h2>
                 <p class="lead">서로에 대해 알아봐요 :D</p>
             </div>
 
             <div class="col-5 text-center" style="width: 1.5rem;">
 
-                <a><img class="card-img-top" onclick="goUpload()"
-                        src="https://drive.google.com/uc?id=1v4hsKRr8GAImlGsdruCdEGXICcTaglHe" style="width: 70%;"></a>
+                <a><img class="card-img-top" onclick="goUpload()" src="../static/maincharacter.png"
+                        style="width: 70%;"></a>
 
                 <div class="card-body">
 
@@ -168,7 +174,7 @@
             {% for profile in profiles %}
             <div class="card">
                 <img class="card-img-top"
-              src="https://d2ur7st6jjikze.cloudfront.net/offer_photos/29590/185689_medium_1525763241.jpg?1525763241"
+                    src="https://d2ur7st6jjikze.cloudfront.net/offer_photos/29590/185689_medium_1525763241.jpg?1525763241"
                     alt="Card image cap">
                 <div class="card-body">
                     <p class="card-title">이름: {{profile['name']}}</p>
