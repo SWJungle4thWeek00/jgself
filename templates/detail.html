@@ -191,26 +191,26 @@
                 var img_src = '../static/' + $(this).val() + '.png';
                 $('#style-img').attr('src', img_src)
             });
-
-            getComments()
         });
 
         function postComment() {
-            writer = 'testtest'
+            receiver = '{{ userId }}'
+            writer = '{{ profiles[\'name\'] }}'
             comment = $('#textarea').val()
 
             $.ajax({
                 type: "POST", // POST 방식으로 요청하겠다.
                 url: "/comment", // /memo라는 url에 요청하겠다.
                 data: {
-                    writer_client: writer,
-                    comment_client: comment,
+                    'receiver_client': receiver,
+                    'writer_client': writer,
+                    'comment_client': comment,
                 },
                 success: function (response) { // 성공하면
                     if (response["result"] == "success") {
                         alert("포스팅 성공!");
                         // 3. 성공 시 페이지 새로고침하기
-                        window.location.href = "/";
+                        window.location.reload();
                     } else {
                         alert("서버 오류!")
                     }
@@ -234,84 +234,20 @@
                     <div class="panel panel-info">
                         <div class="panel-heading">
                             <div class="media-list">
+                                {% for comment in comments %}
                                 <li class="media">
                                     <div class="media-body">
                                         <span class="text-muted pull-right">
                                         </span>
                                         <a href="#" class="pull-left">
-                                            <strong class="text-success">@LaurenceCorreil</strong>
+                                            <strong class="text-success">{{comment['writer']}}</strong>
                                         </a>
                                         <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                            Lorem ipsum dolor <a href="#">#ipsumdolor </a>adipiscing elit.
+                                            {{comment['comment']}}
                                         </p>
                                     </div>
                                 </li>
-                                <li class="media">
-                                    <div class="media-body">
-                                        <span class="text-muted pull-right">
-                                        </span>
-                                        <a href="#" class="pull-left">
-                                            <strong class="text-success">@LaurenceCorreil</strong>
-                                        </a>
-                                        <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                            Lorem ipsum dolor <a href="#">#ipsumdolor </a>adipiscing elit.
-                                        </p>
-                                    </div>
-                                </li>
-                                <li class="media">
-                                    <div class="media-body">
-                                        <span class="text-muted pull-right">
-                                        </span>
-                                        <a href="#" class="pull-left">
-                                            <strong class="text-success">@LaurenceCorreil</strong>
-                                        </a>
-                                        <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                            Lorem ipsum dolor <a href="#">#ipsumdolor </a>adipiscing elit.
-                                        </p>
-                                    </div>
-                                </li>
-                                <li class="media">
-                                    <div class="media-body">
-                                        <span class="text-muted pull-right">
-                                        </span>
-                                        <a href="#" class="pull-left">
-                                            <strong class="text-success">@LaurenceCorreil</strong>
-                                        </a>
-                                        <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                            Lorem ipsum dolor <a href="#">#ipsumdolor </a>adipiscing elit.
-                                        </p>
-                                    </div>
-                                </li>
-                                <li class="media">
-                                    <div class="media-body">
-                                        <span class="text-muted pull-right">
-                                        </span>
-                                        <a href="#" class="pull-left">
-                                            <strong class="text-success">@LaurenceCorreil</strong>
-                                        </a>
-                                        <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                            Lorem ipsum dolor <a href="#">#ipsumdolor </a>adipiscing elit.
-                                        </p>
-                                    </div>
-                                </li>
-                                <li class="media">
-                                    <div class="media-body">
-                                        <span class="text-muted pull-right">
-                                        </span>
-                                        <a href="#" class="pull-left">
-                                            <strong class="text-success">@LaurenceCorreil</strong>
-                                        </a>
-                                        <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                            Lorem ipsum dolor <a href="#">#ipsumdolor </a>adipiscing elit.
-                                        </p>
-                                    </div>
-                                </li>
+                                {% endfor %}
                             </div>
                         </div>
                         <div class="commentPanel">
@@ -319,9 +255,9 @@
                                 style="color:rgb(0, 0, 0);border-style:dotted">
                             </hr>
                             <div class="panel-body">
-                                <textarea class="form-control" placeholder="한마디 남겨주세요 .. " rows="3"></textarea>
+                                <textarea id='textarea' class="form-control" placeholder="한마디 남겨주세요 .. " rows="3"></textarea>
                                 <br>
-                                <button type="button" class="btn btn-info pull-right">Post</button>
+                                <button type="button" class="btn btn-info pull-right" onclick="postComment()">Post</button>
                                 <div class="clearfix"></div>
                             </div>
                         </div>
@@ -336,7 +272,7 @@
                 <div class="image-container">
                 </div>
                 <div class=" mt-2">
-                    <div class="col-md-12"><label class="labels">저는 {{ user_name }} 입니다</label><input type="text"
+                    <div class="col-md-12"><label class="labels">저는 {{ profiles['name'] }} 입니다</label><input type="text"
                             id="post-name" class="form-control" placeholder="당신의 이름이 궁금해요" value=""></div>
 
                 </div>
