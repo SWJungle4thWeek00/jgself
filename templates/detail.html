@@ -195,7 +195,7 @@
 
         function postComment() {
             receiver = '{{ userId }}'
-            writer = '{{ profiles[\'name\'] }}'
+            writer = '{{ writer }}'
             comment = $('#textarea').val()
 
             $.ajax({

@@ -161,10 +161,12 @@ def profileDetail():
 
         profiles = list(db.profiles.find({'name' : profileId}))
         emails = profiles[0]['userId']
+        writer = profiles[0]['name']
         comments = list(db.comments.find({'profileId' : emails}))
-
         count = len(comments)
-        return render_template('detail.html', userId=userId, profiles = profiles[0], comments = comments, count=count)
+        
+        return render_template('detail.html', userId=userId, profiles = profiles[0], comments = comments, count=count, writer = writer)
+
     else:
         return redirect("/login")
 
