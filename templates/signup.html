@@ -27,26 +27,38 @@
 
     <!-- style -->
     <style type="text/css">
-        #signUpImg {
+        /* #signUpImg {
             width: 400px;
             height: 180px;
-        }
-
-        .signUpImg {
-            position: relative;
+        } */
+        .form-group {
+            width: 100%;
+            margin: 10px auto;
         }
 
         div {
-            margin-top: 15px;
+            margin-top: 10px;
+        }
+
+        #new {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         #all {
-            width: 450px;
-            margin: 15px auto;
             position: absolute;
-            top: 40%;
+            top: 80px;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
+        }
+
+        #enroll {
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         #checkId {
@@ -61,8 +73,8 @@
         function idCheck() {
             let id = $("#idForm").val();
 
-            if (id.length < 7) {
-                alert('아이디는 7자 이상으로 입력해주세요');
+            if (id.length < 1) {
+                alert('아이디를 입력해주세요');
             }
             else {
 
@@ -78,6 +90,7 @@
                         if (response["result"] == "success") {
                             $("#checkId2").hide();
                             $("#checkId").show();
+                            alert("가입이 가능합니다")
                         } else {
                             $("#checkId").hide();
                             $("#checkId2").show();
@@ -92,10 +105,10 @@
             let pw = $("#passwordForm").val();
             let pwCheck = $("#passwordCheckForm").val();
             if ($('#checkId').is(':visible') == false) {
-                alert("아이디 중복 체크를 해주세요!")
+                alert("이메일 체크를 해주세요!")
             }
-            else if (id.length < 7 && pw.length < 7 && pwCheck.length < 7) {
-                alert("아이디 비밀번호는 7자 이상으로 입력해주세요!")
+            else if (id.length < 1 || pw.length < 1 || pwCheck.length < 1) {
+                alert("아이디 또는 비밀번호 입력해주세요!")
             }
             else if (pw != pwCheck) {
                 alert("비밀번호, 비밀번호 확인은 동일해야합니다.")
@@ -125,31 +138,35 @@
 </head>
 
 <body>
-    <div id="all">
-        <div class="signUpImg">
-            <img id="signUpImg" src="{{ url_for('static', filename='logo.png') }}" alt="signUpImg">
-        </div>
-        <div>
-            <label for="idForm">ID : </label>
-            <input type="text" id="idForm" name="idForm">
-            <button id="checkIdButton" onclick="idCheck()" class="logiButton">
-                중복확인
-            </button>
-            <label id="checkId">사용 가능</label>
-            <label id="checkId2">사용 불가</label>
-        </div>
-        <div>
-            <label for="passwordForm">PW : </label>
-            <input type="password" id="passwordForm" name="passowrodForm">
-        </div>
-        <div>
-            <label for="passwordCheckForm">PW Check : </label>
-            <input type="password" id="passwordCheckForm" name="passowrodCheckForm">
-        </div>
-        <div>
-            <button onclick=signUp() class="newUserButton">
-                회원가입
-            </button>
+    <div class="row">
+        <div id="new" class="col-md-6 login-form-1 text-center">
+            <div id="all">
+                <div class="enroll">
+                    <H2>회원가입</H2>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="idForm" name="idForm" placeholder="정글 이메일을 입력해주세요">
+                    <button id="checkIdButton" onclick="idCheck()" class="logiButton">
+                        이메일 체크
+                    </button>
+
+                </div>
+                <div>
+                    <label id="checkId" style="color:blue;">가입 가능</label>
+                    <label id="checkId2" style="color:red;">가입 불가</label>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="passwordForm" name="passowrodForm" placeholder="비밀번호">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="passwordCheckForm" name="passowrodCheckForm" placeholder="비밀번호 확인">
+                </div>
+                <div>
+                    <button onclick=signUp() class="newUserButton">
+                        회원가입 완료
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </body>
